@@ -1,9 +1,10 @@
 ﻿using Sandbox;
+using winsandbox.sandbox_extensions;
 
-[Library( "sandbox", Title = "Sandbox" )]
-partial class SandboxGame : Game
+[Library( "winsbox", Title = "Win's Sandbox" )]
+partial class WinSandbox : Game
 {
-	public SandboxGame()
+	public WinSandbox()
 	{
 		if ( IsServer )
 		{
@@ -44,6 +45,8 @@ partial class SandboxGame : Game
 		ent.Rotation = Rotation.From( new Angles( 0, owner.EyeRot.Angles().yaw, 0 ) ) * Rotation.FromAxis( Vector3.Up, 180 );
 		ent.SetModel( modelname );
 		ent.Position = tr.EndPos - Vector3.Up * ent.CollisionBounds.Mins.z;
+
+		UndoSystem.AddUndoEntry( ConsoleSystem.Caller, ent.NetworkIdent );
 	}
 
 	[ServerCmd( "spawn_entity" )]
@@ -76,6 +79,7 @@ partial class SandboxGame : Game
 		ent.Rotation = Rotation.From( new Angles( 0, owner.EyeRot.Angles().yaw, 0 ) );
 
 		//Log.Info( $"ent: {ent}" );
+		UndoSystem.AddUndoEntry( ConsoleSystem.Caller, ent.NetworkIdent );
 	}
 
 	public override void DoPlayerNoclip( Client player )
