@@ -35,14 +35,15 @@ namespace winsandbox.Stargates
 				return;
 			if ( !Enabled )
 				return;
+			var gate = Parent as Stargate;
 			if (IsServer)
 			{
 				PlaySound( "stargates.milkyway.pass" );
+				gate.Teleport( other );
 				Log.Info( $"Touch started with {other}:{other.NetworkIdent}" );
 			}
 			if ( IsClient )
 			{
-				var gate = Parent as Stargate;
 				ChatBox.AddInformation( $"Touching {gate.Address}" );
 			}
 		}
