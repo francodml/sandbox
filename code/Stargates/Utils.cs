@@ -14,13 +14,13 @@ namespace winsandbox.Stargates
 		{
 			var ply = ConsoleSystem.Caller.Pawn;
 
-			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 512 )
-				.EntitiesOnly()
-				.WithTag( "IsStargate" )
+			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+				.Ignore( ply )
+				.WithTag("IsStargate")
 				.Run();
-			if ( tr.Hit )
+			if ( tr.Hit && tr.Entity.IsValid() && tr.Entity is Stargate sg )
 			{
-
+				sg.Connect(otheraddress.ToUpperInvariant());
 			}
 		}
     }
