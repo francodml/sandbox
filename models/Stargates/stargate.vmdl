@@ -1,0 +1,95 @@
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:modeldoc29:version{3cec427c-1b0e-4d48-a90a-0436f33a6041} -->
+{
+	rootNode = 
+	{
+		_class = "RootNode"
+		children = 
+		[
+			{
+				_class = "MaterialGroupList"
+				children = 
+				[
+					{
+						_class = "DefaultMaterialGroup"
+						remaps = 
+						[
+							{
+								from = "circle.vmat"
+								to = "dev/helper/reflectivity_90b.vmat"
+							},
+						]
+						use_global_default = false
+						global_default_material = ""
+					},
+				]
+			},
+			{
+				_class = "PhysicsShapeList"
+				children = 
+				[
+					{
+						_class = "PhysicsShapeBox"
+						parent_bone = ""
+						surface_prop = "default"
+						collision_prop = "default"
+						origin = [ -0.061485, 156.553635, 101.840195 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 18.84816, 51.36134, 335.717499 ]
+					},
+					{
+						_class = "PhysicsShapeBox"
+						parent_bone = ""
+						surface_prop = "default"
+						collision_prop = "default"
+						origin = [ 0.068018, -156.554001, 101.839996 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 18.589153, 51.36134, 335.717499 ]
+					},
+					{
+						_class = "PhysicsShapeBox"
+						parent_bone = ""
+						surface_prop = "default"
+						collision_prop = "default"
+						origin = [ 0.068018, -8.414349, 252.45932 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 18.589153, 328.180359, 66.006027 ]
+					},
+					{
+						_class = "PhysicsShapeBox"
+						parent_bone = ""
+						surface_prop = "default"
+						collision_prop = "default"
+						origin = [ 0.068018, 2.76909, -39.541 ]
+						angles = [ 0.0, 0.0, 0.0 ]
+						dimensions = [ 18.589153, 305.813477, 66.006027 ]
+					},
+				]
+			},
+			{
+				_class = "RenderMeshList"
+				children = 
+				[
+					{
+						_class = "RenderMeshFile"
+						filename = "models/sources/Stargate.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 0.7
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+				]
+			},
+		]
+		model_archetype = ""
+		primary_associated_entity = ""
+		anim_graph_name = ""
+	}
+}

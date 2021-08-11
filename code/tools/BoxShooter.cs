@@ -1,6 +1,6 @@
 ﻿namespace Sandbox.Tools
 {
-	[Library( "tool_boxgun", Title = "Box Shooter", Description = "Shoot boxes", Group = "fun" )]
+	[Library( "tool_barrelgun", Title = "Barrel Shooter", Description = "Shoot barrels", Group = "fun" )]
 	public class BoxShooter : BaseTool
 	{
 		TimeSince timeSinceShoot;
@@ -14,7 +14,7 @@
 					ShootBox();
 				}
 
-				if ( Input.Down( InputButton.Attack2 ) && timeSinceShoot > 0.05f )
+				if ( Input.Down( InputButton.Attack2 ) && timeSinceShoot > 0.02f )
 				{
 					timeSinceShoot = 0;
 					ShootBox();
@@ -30,8 +30,8 @@
 				Rotation = Owner.EyeRot
 			};
 
-			ent.SetModel( "models/citizen_props/crate01.vmdl" );
-			ent.Velocity = Owner.EyeRot.Forward * 1000;
+			ent.SetModel( "models/rust_props/barrels/fuel_barrel.vmdl" );
+			ent.Velocity = Owner.EyeRot.Forward * 100000;
 		}
 	}
 }

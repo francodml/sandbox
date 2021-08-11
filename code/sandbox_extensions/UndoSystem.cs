@@ -37,6 +37,7 @@ namespace winsandbox.sandbox_extensions
 			if ( ent == null )
 			{
 				PlayerList.RemoveAt( PlayerList.Count - 1 );
+				wsb_undo();
 				return;
 			}
 
