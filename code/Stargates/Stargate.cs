@@ -29,15 +29,16 @@ namespace winsandbox.Stargates
 			Tags.Add( "IsStargate" );
 			SetModel( "models/stargates/stargate.vmdl" );
 
-			SetupPhysicsFromModel(PhysicsMotionType.Dynamic,false);
+			SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
 			PhysicsBody.BodyType = PhysicsBodyType.Static;
 
 			if ( IsServer && string.IsNullOrEmpty( Address ) )
 			{
-				List<char> PotentialSymbols = Utils.AddressSymbols;
-				for (int i = 0; i < 7; i++ )
+				List<char> PotentialSymbols = new();
+				PotentialSymbols.AddRange( Utils.AddressSymbols );
+				for ( int i = 0; i < 7; i++ )
 				{
-					int random = Rand.Int( 0, PotentialSymbols.Count-1 );
+					int random = Rand.Int( 0, PotentialSymbols.Count - 1 );
 					Address += PotentialSymbols[random];
 					PotentialSymbols.RemoveAt( random );
 				}
@@ -46,6 +47,7 @@ namespace winsandbox.Stargates
 			eventHorizon.Position = Position;
 			eventHorizon.Rotation = Rotation;
 			eventHorizon.SetParent( this );
+			Log.Info($"IsStargate: {Tags.Has("IsStargate")}");
 
 		}
 		public bool IsUsable( Entity user ) => true;
@@ -74,22 +76,73 @@ namespace winsandbox.Stargates
 			GlowActive = false;
 		}
 
-		public void FindGate(string address = null)
+		public Stargate FindGate(string address = null)
 		{
 			if ( address == null && OtherAddress != null )
 				address = OtherAddress;
-			else return;
 
-			OtherGate = (Stargate)Entity.All.Where( x => x is Stargate a && a.Address == address ).FirstOrDefault();
+			return (Stargate)Entity.All.Where( x => x is Stargate a && a.Address == address ).FirstOrDefault();
 		}
 
 		public bool Connect(string address = null)
 		{
+			if ( !IsServer )
+				return false;
 			if ( address == null && OtherAddress == null )
 				return false;
 			if ( Busy )
 				return false;
+
+			var otherGate = FindGate( address );
+			if ( otherGate == null || !otherGate.IsValid() || OtherGate.Busy )
+				return false;
+			OtherAddress = address;
+			OtherGate = otherGate;
+
+			OtherGate.ConnectIncoming( this );
+
+			eventHorizon.Enable();
+
 			return true;
+		}
+
+		public void ConnectIncoming(Stargate other)
+		{
+			OtherAddress = other.Address;
+			OtherGate = other;
+			eventHorizon.Enable();
+		}
+
+		public void Disconnect()
+		{
+			if ( !IsServer | OtherGate == null )
+				return;
+
+			OtherAddress = string.Empty;
+			eventHorizon.Disable();
+			Busy = false;
+
+			if ( OtherGate.IsValid() && OtherGate.Busy )
+				OtherGate.Disconnect();
+
+			OtherGate = null;
+		}
+
+		protected override void OnDestroy()
+		{
+			base.OnDestroy();
+
+			Disconnect();
+		}
+
+		public void Teleport(Entity ent)
+		{
+			if ( !IsServer )
+				return;
+			ent.Rotation = OtherGate.Rotation.Inverse;
+			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 100;
+
+			ent.Velocity = new Vector3( 0, 0, 0 );
 		}
 	}
 }
