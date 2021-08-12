@@ -23,5 +23,20 @@ namespace winsandbox.Stargates
 				sg.Connect(otheraddress.ToUpperInvariant());
 			}
 		}
+
+		[ServerCmd("sg_disconnect_target", Help = "Disconnects the gate you're looking at")]
+		public static void DisconnectGate()
+		{
+			var ply = ConsoleSystem.Caller.Pawn;
+
+			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+				.Ignore( ply )
+				.WithTag( "IsStargate" )
+				.Run();
+			if ( tr.Hit && tr.Entity.IsValid() && tr.Entity is Stargate sg )
+			{
+				sg.Disconnect();
+			}
+		}
     }
 }
