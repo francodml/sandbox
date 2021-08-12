@@ -54,19 +54,15 @@ namespace winsandbox.Stargates
 		public bool OnUse( Entity user )
 		{
 			ChatBox.AddInformation(To.Single(user),Address);
-			/*var otherGate = (Stargate)Entity.All.Where( x => x is Stargate a && a.Address != Address ).FirstOrDefault();
-			otherGate.Glow();*/
-			switch ( eventHorizon.Enabled )
-			{
-				case true:
-					eventHorizon.Disable();
-					break;
-				case false:
-					eventHorizon.Enable();
-					break;
-			}
-
+			Log.Info( Address );
+			CopyAddressToClipboard( To.Single( user ) );
 			return false;
+		}
+
+		[ClientRpc]
+		public void CopyAddressToClipboard()
+		{
+			Clipboard.SetText( Address );
 		}
 
 		public async void Glow()
@@ -94,7 +90,7 @@ namespace winsandbox.Stargates
 				return false;
 
 			var otherGate = FindGate( address );
-			if ( otherGate == null || !otherGate.IsValid() || OtherGate.Busy )
+			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy )
 				return false;
 			OtherAddress = address;
 			OtherGate = otherGate;
@@ -103,6 +99,8 @@ namespace winsandbox.Stargates
 
 			eventHorizon.Enable();
 
+			Busy = true;
+
 			return true;
 		}
 
@@ -110,6 +108,7 @@ namespace winsandbox.Stargates
 		{
 			OtherAddress = other.Address;
 			OtherGate = other;
+			Busy = true;
 			eventHorizon.Enable();
 		}
 
@@ -133,13 +132,16 @@ namespace winsandbox.Stargates
 			base.OnDestroy();
 
 			Disconnect();
-		}
+		}	
 
 		public void Teleport(Entity ent)
 		{
+			using ( Prediction.Off() )
+			{
+				ent.EyeRot = ent.EyeRot.RotateAroundAxis( new Vector3( 0, 0, 1 ), OtherGate.Rotation.Yaw() - ent.EyeRot.Yaw() + 180 );
+			}
 			if ( !IsServer )
 				return;
-			ent.Rotation = OtherGate.Rotation.Inverse;
 			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 100;
 
 			ent.Velocity = new Vector3( 0, 0, 0 );
