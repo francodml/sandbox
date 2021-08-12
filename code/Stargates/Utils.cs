@@ -5,9 +5,14 @@ using Sandbox;
 
 namespace winsandbox.Stargates
 {
-    public static class Utils
-    {
-        public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToList();
+	public static class Utils
+	{
+		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToList();
+		public static Dictionary<Type, bool> IgnoredTypes = new()
+		{
+			[typeof(EventHorizon)] = true,
+			[typeof(PickupTrigger)] = true
+		};
 
 		[ServerCmd("sg_dial_target", Help = "Dial the gate you're looking at")]
 		public static void DialGate( string otheraddress )
@@ -37,6 +42,37 @@ namespace winsandbox.Stargates
 			{
 				sg.Disconnect();
 			}
+		}
+
+		[ServerCmd("rotateplayer")]
+		public static void RotatePlayer()
+		{
+			var ply = ConsoleSystem.Caller.Pawn as AnimEntity;
+			var newRot = new Vector3( 0, 0, 0 );
+			ply.SetAnimLookAt( "aim_eyes", newRot );
+			ply.SetAnimLookAt( "aim_head", newRot );
+			ply.SetAnimLookAt( "aim_body", newRot );
+
+			ply.SetAnimFloat( "aim_eyes_weight", 1.0f );
+			ply.SetAnimFloat( "aim_head_weight", 1.0f );
+			ply.SetAnimFloat( "aim_body_weight", 1.0f );
+
+			ply.EyeRot = new Angles( 0, 0, 0 ).ToRotation();
+		}
+
+		[ClientCmd("cl_rotateplayer")]
+		public static void clrotateplayer()
+		{
+			var ply = ConsoleSystem.Caller.Pawn as AnimEntity;
+			ply.EyeRot = new Angles( 0, 0, 0 ).ToRotation();
+			var newRot = new Vector3( 10000, 1000, 1000 );
+			ply.SetAnimLookAt( "aim_eyes", newRot );
+			ply.SetAnimLookAt( "aim_head", newRot );
+			ply.SetAnimLookAt( "aim_body", newRot );
+
+			ply.SetAnimFloat( "aim_eyes_weight", 1.0f );
+			ply.SetAnimFloat( "aim_head_weight", 1.0f );
+			ply.SetAnimFloat( "aim_body_weight", 1.0f );
 		}
     }
 }

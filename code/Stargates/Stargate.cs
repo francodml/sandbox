@@ -62,6 +62,7 @@ namespace winsandbox.Stargates
 		[ClientRpc]
 		public void CopyAddressToClipboard()
 		{
+			Local.Hud.AddChild<GateMenu>();
 			Clipboard.SetText( Address );
 		}
 
@@ -136,12 +137,16 @@ namespace winsandbox.Stargates
 
 		public void Teleport(Entity ent)
 		{
-			using ( Prediction.Off() )
-			{
-				ent.EyeRot = ent.EyeRot.RotateAroundAxis( new Vector3( 0, 0, 1 ), OtherGate.Rotation.Yaw() - ent.EyeRot.Yaw() + 180 );
-			}
 			if ( !IsServer )
 				return;
+
+			if ( ent is SandboxPlayer ply )
+			{
+
+			}
+
+			/*ent.EyeRot = ent.EyeRot.RotateAroundAxis( new Vector3( 0, 0, 1 ), 180);
+			ent.EyeRotLocal = ent.EyeRotLocal.RotateAroundAxis( new Vector3( 0, 0, 1 ), 180 );*/
 			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 100;
 
 			ent.Velocity = new Vector3( 0, 0, 0 );

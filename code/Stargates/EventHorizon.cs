@@ -31,8 +31,13 @@ namespace winsandbox.Stargates
 
 		public override void StartTouch( Entity other )
 		{
-			if ( other.IsWorld || other.GetType() == typeof(PickupTrigger))
-				return;
+			try
+			{
+				if ( other.IsWorld || Utils.IgnoredTypes[other.GetType()] )
+					return;
+			}
+			catch ( Exception ) { }
+
 			if ( !Enabled )
 				return;
 			var gate = Parent as Stargate;

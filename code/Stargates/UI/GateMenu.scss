@@ -1,0 +1,25 @@
+﻿gatemenu {
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    width:800px;
+    height:500px;
+    position:absolute;
+    border-radius: 5px;
+    pointer-events: all;
+    transition: all 0.1s ease-out;
+    position: absolute;
+    font-family: poppins;
+    opacity: 1;
+    background-color: rgba( #111, 0.7 );
+
+    .topbar {
+        display: flex;
+        flex-direction: column;
+
+        .close {
+            align-self: flex-end;
+        }
+    }
+}
