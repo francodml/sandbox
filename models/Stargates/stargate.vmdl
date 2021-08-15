@@ -14,8 +14,8 @@
 						remaps = 
 						[
 							{
-								from = "circle.vmat"
-								to = "dev/helper/reflectivity_90b.vmat"
+								from = "vert.vmat"
+								to = "materials/stargates/chevron_sg1.vmat"
 							},
 						]
 						use_global_default = false
@@ -28,40 +28,23 @@
 				children = 
 				[
 					{
-						_class = "PhysicsShapeBox"
+						_class = "PhysicsMeshFile"
+						name = "Stargate_SG1_C1"
 						parent_bone = ""
 						surface_prop = "default"
 						collision_prop = "default"
-						origin = [ -0.061485, 156.553635, 101.840195 ]
-						angles = [ 0.0, 0.0, 0.0 ]
-						dimensions = [ 18.84816, 51.36134, 335.717499 ]
-					},
-					{
-						_class = "PhysicsShapeBox"
-						parent_bone = ""
-						surface_prop = "default"
-						collision_prop = "default"
-						origin = [ 0.068018, -156.554001, 101.839996 ]
-						angles = [ 0.0, 0.0, 0.0 ]
-						dimensions = [ 18.589153, 51.36134, 335.717499 ]
-					},
-					{
-						_class = "PhysicsShapeBox"
-						parent_bone = ""
-						surface_prop = "default"
-						collision_prop = "default"
-						origin = [ 0.068018, -8.414349, 252.45932 ]
-						angles = [ 0.0, 0.0, 0.0 ]
-						dimensions = [ 18.589153, 328.180359, 66.006027 ]
-					},
-					{
-						_class = "PhysicsShapeBox"
-						parent_bone = ""
-						surface_prop = "default"
-						collision_prop = "default"
-						origin = [ 0.068018, 2.76909, -39.541 ]
-						angles = [ 0.0, 0.0, 0.0 ]
-						dimensions = [ 18.589153, 305.813477, 66.006027 ]
+						recenter_on_parent_bone = false
+						offset_origin = [ 0.0, 0.0, 0.0 ]
+						offset_angles = [ 0.0, 0.0, 0.0 ]
+						filename = "models/Stargates/Stargate_SG1_C.fbx"
+						import_scale = 0.7
+						maxMeshVertices = 0
+						qemError = 0.0
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
 					},
 				]
 			},
@@ -71,14 +54,14 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						filename = "models/sources/Stargate.fbx"
+						filename = "models/stargates/stargate.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 0.7
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
-						parent_bone = ""
+						parent_bone = "root"
 						import_filter = 
 						{
 							exclude_by_default = false

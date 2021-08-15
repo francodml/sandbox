@@ -14,8 +14,8 @@
 						remaps = 
 						[
 							{
-								from = "circle.vmat"
-								to = "dev/helper/reflectivity_90b.vmat"
+								from = "eventhorizon.vmat"
+								to = "materials/default/white.vmat"
 							},
 						]
 						use_global_default = false
@@ -43,7 +43,7 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						filename = "models/sources/EventHorizon.fbx"
+						filename = "models/stargates/eventhorizon.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 0.7
