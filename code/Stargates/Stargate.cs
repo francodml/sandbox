@@ -53,17 +53,15 @@ namespace winsandbox.Stargates
 		public bool IsUsable( Entity user ) => true;
 		public bool OnUse( Entity user )
 		{
-			ChatBox.AddInformation(To.Single(user),Address);
-			Log.Info( Address );
-			CopyAddressToClipboard( To.Single( user ) );
+			OpenMenu( To.Single( user ) );
 			return false;
 		}
 
 		[ClientRpc]
-		public void CopyAddressToClipboard()
+		public void OpenMenu()
 		{
-			Local.Hud.AddChild<GateMenu>();
-			Clipboard.SetText( Address );
+			var menu = Local.Hud.AddChild<GateMenu>();
+			menu.SetGate( this );
 		}
 
 		public async void Glow()
