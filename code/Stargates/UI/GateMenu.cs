@@ -19,17 +19,17 @@ namespace winsandbox.Stargates
 		{
 			StyleSheet.Load( "Stargates/UI/GateMenu.scss" );
 
-			var controlBar = Add.Panel( "controlbar" );
+			var titlebar = AddChild<Titlebar>();
 			{
-				gateaddress = controlBar.Add.Button( "a", "title", () =>
+				gateaddress = titlebar.Add.Button( "a", "title", () =>
 				{
 					Clipboard.SetText( Gate.Address );
 					ChatBox.AddInformation( "Copied address to clipboard" );
 				} );
-				controlBar.AddChild( new PanelGrabHandle( this, new Vector2(200,200) ) );
-				controlBar.Add.Button( "Close", "close", () => this.Delete() );
+				titlebar.Add.Button( "Close", "close", () => this.Delete() );
 			}
 
+			Add.Button( "Disconnect", () => Gate.ShouldDisconnect = true ); ;
 		}
 
 		public void SetGate( Stargate gate )

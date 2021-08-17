@@ -14,8 +14,8 @@
 						remaps = 
 						[
 							{
-								from = "vert.vmat"
-								to = "materials/stargates/chevron_sg1.vmat"
+								from = "stargate_sg1.vmat"
+								to = "materials/stargates/stargate_sg1.vmat"
 							},
 						]
 						use_global_default = false
@@ -28,8 +28,8 @@
 				children = 
 				[
 					{
-						_class = "PhysicsMeshFile"
-						name = "Stargate_SG1_C1"
+						_class = "PhysicsHullFile"
+						name = "Stargate_SG1_C"
 						parent_bone = ""
 						surface_prop = "default"
 						collision_prop = "default"
@@ -38,8 +38,10 @@
 						offset_angles = [ 0.0, 0.0, 0.0 ]
 						filename = "models/Stargates/Stargate_SG1_C.fbx"
 						import_scale = 0.7
-						maxMeshVertices = 0
-						qemError = 0.0
+						faceMergeAngle = 5.0
+						maxHullVertices = 0
+						import_mode = "HullPerElement"
+						optimization_algorithm = "QEM"
 						import_filter = 
 						{
 							exclude_by_default = false
@@ -61,7 +63,7 @@
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
-						parent_bone = "root"
+						parent_bone = ""
 						import_filter = 
 						{
 							exclude_by_default = false
@@ -70,8 +72,131 @@
 					},
 				]
 			},
+			{
+				_class = "Skeleton"
+				children = 
+				[
+					{
+						_class = "SkeletonFile"
+						name = "Stargate_ChevronAttachPoints"
+						filename = "models/Stargates/Stargate_ChevronAttachPoints.fbx"
+						import_scale = 0.7
+					},
+				]
+			},
+			{
+				_class = "AttachmentList"
+				children = 
+				[
+					{
+						_class = "Attachment"
+						name = "Chevron07"
+						parent_bone = "Attach_Chevron07"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron01"
+						parent_bone = "Attach_Chevron01"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron02"
+						parent_bone = "Attach_Chevron02"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron03"
+						parent_bone = "Attach_Chevron03"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron04"
+						parent_bone = "Attach_Chevron04"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron05"
+						parent_bone = "Attach_Chevron05"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron06"
+						parent_bone = "Attach_Chevron06"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron08"
+						parent_bone = "Attach_Chevron08"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron09"
+						parent_bone = "Attach_Chevron09"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+				]
+			},
+			{
+				_class = "AnimationList"
+				children = 
+				[
+					{
+						_class = "AnimBindPose"
+						name = "Idle"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						frame_count = 1
+						frame_rate = 30
+					},
+				]
+				default_root_bone_name = ""
+			},
 		]
-		model_archetype = ""
+		model_archetype = "default"
 		primary_associated_entity = ""
 		anim_graph_name = ""
 	}

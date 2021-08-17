@@ -28,7 +28,7 @@
 						filename = "models/Stargates/Chevron_SG1.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
-						import_scale = 0.2
+						import_scale = 0.7
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
@@ -45,6 +45,26 @@
 				_class = "AnimationList"
 				children = 
 				[
+					{
+						_class = "AnimFile"
+						name = "Chevron_SG1_idle"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = true
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						source_filename = "models/Stargates/Chevron_SG1_idle.fbx"
+						start_frame = -1
+						end_frame = -1
+						framerate = -1.0
+						reverse = false
+					},
 					{
 						_class = "AnimFile"
 						name = "Chevron_SG1_close"
@@ -85,23 +105,6 @@
 						framerate = -1.0
 						reverse = false
 					},
-					{
-						_class = "AnimBindPose"
-						name = "idle"
-						activity_name = ""
-						activity_weight = 1
-						weight_list_name = ""
-						fade_in_time = 0.2
-						fade_out_time = 0.2
-						looping = false
-						delta = false
-						worldSpace = false
-						hidden = false
-						anim_markup_ordered = false
-						disable_compression = false
-						frame_count = 1
-						frame_rate = 30
-					},
 				]
 				default_root_bone_name = ""
 			},
@@ -124,6 +127,17 @@
 						]
 						use_global_default = false
 						global_default_material = ""
+					},
+					{
+						_class = "MaterialGroup"
+						name = "Lit"
+						remaps = 
+						[
+							{
+								from = "materials/stargates/chevron_sg1_light.vmat"
+								to = "materials/stargates/chevron_sg1_light_lit.vmat"
+							},
+						]
 					},
 				]
 			},

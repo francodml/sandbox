@@ -5,41 +5,51 @@ using Sandbox.UI;
 namespace winsandbox.Stargates
 {
 	[Library]
-	public class PanelGrabHandle : Panel
+	public class MouseDragPanel : Panel
 	{
-		Vector2 position;
-		Panel MovePanel;
-		public PanelGrabHandle( Panel parent, Vector2 initpos )
+
+		public Panel Window => Parent;
+		protected bool IsMoving { get; set; }
+		protected Vector2 InitialPos { get; set; }
+
+		protected override void OnMouseDown( MousePanelEvent e )
 		{
-			MovePanel = parent;
-			position = initpos;
+			base.OnMouseDown( e );
+
+			IsMoving = true;
+			Style.Dirty();
 		}
 
-		public override void OnButtonEvent( ButtonEvent e )
+		protected override void OnMouseUp( MousePanelEvent e )
 		{
-			if ( e.Button == "mouseleft" )
-			{
-				SetMouseCapture( e.Pressed );
-			}
+			base.OnMouseUp( e );
 
-			base.OnButtonEvent( e );
+			IsMoving = false;
+		}
+	}
+
+	public class Titlebar : MouseDragPanel
+	{
+		protected override void OnMouseDown( MousePanelEvent e )
+		{
+			base.OnMouseDown( e );
+
+			InitialPos = (Mouse.Position - new Vector2( Window.Box.Left, Window.Box.Top )) * ScaleFromScreen;
 		}
 
-		public override void Tick()
+		protected override void OnMouseMove( MousePanelEvent e )
 		{
-			base.Tick();
+			base.OnMouseMove( e );
 
-			if ( HasMouseCapture )
+			if ( IsMoving )
 			{
-				position += Mouse.Delta;
+				var newPos = (Mouse.Position * ScaleFromScreen) - InitialPos;
 
-				Log.Info( MovePanel.ElementName );
-				
-				MovePanel.Style.Left = Math.Clamp( position.x, 0, Screen.Width-800 );
-				MovePanel.Style.Top = Math.Clamp( position.y, 0, Screen.Height-500 );
-				MovePanel.Style.Dirty();
+				Window.Style.Left = Length.Pixels( newPos.x );
+				Window.Style.Top = Length.Pixels( newPos.y );
+
+				Window.Style.Dirty();
 			}
-
 		}
 	}
 }

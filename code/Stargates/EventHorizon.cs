@@ -45,11 +45,6 @@ namespace winsandbox.Stargates
 			{
 				PlaySound( "stargates.milkyway.pass" );
 				gate.Teleport( other );
-				Log.Info( $"Touch started with {other}:{other.NetworkIdent}" );
-			}
-			if ( IsClient )
-			{
-				ChatBox.AddInformation( $"Touching {gate.Address}" );
 			}
 		}
 

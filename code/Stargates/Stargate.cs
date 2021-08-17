@@ -22,9 +22,11 @@ namespace winsandbox.Stargates
 		private Stargate OtherGate;
 
 		private EventHorizon eventHorizon;
+		private List<Chevron> chevrons = new();
 		public override void Spawn()
 		{
 			base.Spawn();
+			Transmit = TransmitType.Always;
 
 			Tags.Add( "IsStargate" );
 			SetModel( "models/stargates/stargate.vmdl" );
@@ -47,7 +49,17 @@ namespace winsandbox.Stargates
 			eventHorizon.Position = Position;
 			eventHorizon.Rotation = Rotation;
 			eventHorizon.SetParent( this );
-			Log.Info($"IsStargate: {Tags.Has("IsStargate")}");
+			
+			for (int i = 0; i < 9; i++ )
+			{
+				var ent = new Chevron();
+				var attach = GetAttachment( $"Chevron0{i+1}" ).GetValueOrDefault();
+				ent.Position = attach.Position;
+				ent.Rotation = attach.Rotation;
+				ent.SetParent( this );
+				ent.Transmit = TransmitType.Always;
+				chevrons.Add( ent );
+			}
 
 		}
 		public bool IsUsable( Entity user ) => true;
@@ -73,10 +85,7 @@ namespace winsandbox.Stargates
 
 		public Stargate FindGate(string address = null)
 		{
-			if ( address == null && OtherAddress != null )
-				address = OtherAddress;
-
-			return (Stargate)Entity.All.Where( x => x is Stargate a && a.Address == address ).FirstOrDefault();
+			return All.OfType<Stargate>().Where( x => x.Address == address && x.Address != Address).FirstOrDefault();
 		}
 
 		public bool Connect(string address = null)
@@ -89,7 +98,7 @@ namespace winsandbox.Stargates
 				return false;
 
 			var otherGate = FindGate( address );
-			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy )
+			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy ) //TODO: Handle busy gate as fail
 				return false;
 			OtherAddress = address;
 			OtherGate = otherGate;
@@ -99,6 +108,7 @@ namespace winsandbox.Stargates
 			eventHorizon.Enable();
 
 			Busy = true;
+			SetChevrons( true );
 
 			return true;
 		}
@@ -109,6 +119,7 @@ namespace winsandbox.Stargates
 			OtherGate = other;
 			Busy = true;
 			eventHorizon.Enable();
+			SetChevrons( true );
 		}
 
 		public void Disconnect()
@@ -124,6 +135,17 @@ namespace winsandbox.Stargates
 				OtherGate.Disconnect();
 
 			OtherGate = null;
+			SetChevrons( false );
+		}
+
+		public void SetChevrons(bool state)
+		{
+			if ( IsClient )
+				return;
+			foreach( Chevron chev in chevrons )
+			{
+				chev.Toggle();
+			}
 		}
 
 		protected override void OnDestroy()
@@ -138,16 +160,30 @@ namespace winsandbox.Stargates
 			if ( !IsServer )
 				return;
 
-			if ( ent is SandboxPlayer ply )
+			if ( true )
 			{
-
+				ent.Rotation = Rotation.LookAt( (OtherGate.Rotation.Forward * 100 - ent.Position).WithZ( 0 ).Normal );
+				ent.EyeRot = ent.Rotation;
 			}
 
-			/*ent.EyeRot = ent.EyeRot.RotateAroundAxis( new Vector3( 0, 0, 1 ), 180);
-			ent.EyeRotLocal = ent.EyeRotLocal.RotateAroundAxis( new Vector3( 0, 0, 1 ), 180 );*/
 			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 100;
 
 			ent.Velocity = new Vector3( 0, 0, 0 );
+		}
+
+		[Net]
+		public bool ShouldDisconnect { get; set; }
+
+		[Event.Tick]
+		public void Tick()
+		{
+			//Log.Info( $"ShouldDisconnect:{ShouldDisconnect}" );
+			if ( ShouldDisconnect == true)
+			{
+				ShouldDisconnect = false;
+				Log.Info($"{IsClient} {IsServer} Attempted Disconnect");
+				Disconnect();
+			}
 		}
 	}
 }

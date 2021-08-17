@@ -32,7 +32,7 @@ Layer0
 	TextureMetalness "materials/stargates/sg_main_4mx4m_color_and_metal.jpg"
 
 	//---- Normal ----
-	TextureNormal "materials/stargates/sg_main_4mx4m_bump.jpg"
+	TextureNormal "materials/default/default_normal.tga"
 
 	//---- Roughness ----
 	TextureRoughness "materials/stargates/sg_main_4mx4m_roughness.jpg"
