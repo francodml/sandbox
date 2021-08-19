@@ -13,7 +13,7 @@ namespace winsandbox.Stargates
 	public partial class Stargate : AnimEntity, IUse
 	{
 		[Net]
-		[Property("Address", Group = "Stargate",)]
+		[Property("Address", Group = "Stargate")]
 		public string Address { get; private set; }
 		[Net]
 		public bool Busy { get; private set; }
