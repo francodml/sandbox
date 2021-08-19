@@ -82,6 +82,12 @@
 						filename = "models/Stargates/Stargate_ChevronAttachPoints.fbx"
 						import_scale = 0.7
 					},
+					{
+						_class = "SkeletonFile"
+						name = "Ring_CentreBone"
+						filename = "models/Stargates/Ring_CentreBone.fbx"
+						import_scale = 1.0
+					},
 				]
 			},
 			{
@@ -164,6 +170,15 @@
 						_class = "Attachment"
 						name = "Chevron09"
 						parent_bone = "Attach_Chevron09"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Centre"
+						parent_bone = "centre"
 						relative_origin = [ 0.0, 0.0, 0.0 ]
 						relative_angles = [ 0.0, 0.0, 0.0 ]
 						weight = 1.0

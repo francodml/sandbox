@@ -3,14 +3,21 @@
 	data = 
 	{
 		UI = false
-		Volume = 1.0
+		Volume = 0.9
 		VolumeRandom = 0.0
 		Pitch = 1.0
-		PitchRandom = 0.0
-		DistanceMax = 1000.0
+		PitchRandom = 0.01
+		DistanceMax = 700.0
 		Sounds = 
 		[
-			"sounds/stargates/milkyway/eh_pass_04.vsnd",
+			"sounds/stargates/milkyway/eh_pass_1.vsnd",
+			"sounds/stargates/milkyway/eh_pass_2.vsnd",
+			"sounds/stargates/milkyway/eh_pass_3.vsnd",
+			"sounds/stargates/milkyway/eh_pass_5.vsnd",
+			"sounds/stargates/milkyway/eh_pass_6.vsnd",
+			"sounds/stargates/milkyway/eh_pass_5.vsnd",
+			"sounds/stargates/milkyway/eh_pass_7.vsnd",
+			"sounds/stargates/milkyway/eh_pass_8.vsnd",
 		]
 	}
 }

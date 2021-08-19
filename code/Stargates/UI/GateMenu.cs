@@ -13,6 +13,7 @@ namespace winsandbox.Stargates
 	{
 		public Stargate Gate { get; private set; }
 		public Button gateaddress;
+		public TextEntry remoteAddress;
 
 		[Library]
 		public GateMenu()
@@ -29,7 +30,25 @@ namespace winsandbox.Stargates
 				titlebar.Add.Button( "Close", "close", () => this.Delete() );
 			}
 
-			Add.Button( "Disconnect", () => Gate.ShouldDisconnect = true ); ;
+			var content = Add.Panel( "content" );
+			{
+				remoteAddress = content.Add.TextEntry( "" );
+				remoteAddress.Placeholder = "Remote Address";
+				remoteAddress.AddEventListener( "onchange", ( x ) => {
+
+					if (remoteAddress.Text.Length > 7 )
+					{
+						remoteAddress.Text = remoteAddress.Text.Substring( 0, 7 );
+					}
+
+				});
+
+				content.Add.Button( "Connect", () => Stargate.UI_Connect( Gate.NetworkIdent, remoteAddress.Text.ToUpper() ) );
+
+				content.Add.Button( "Disconnect", () => Stargate.UI_Disconnect( Gate.NetworkIdent ) );
+
+				content.Add.Button( "Animate", () => Stargate.UI_Animate( Gate.NetworkIdent ) );
+			}
 		}
 
 		public void SetGate( Stargate gate )

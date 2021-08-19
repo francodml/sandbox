@@ -8,12 +8,12 @@ using Sandbox.UI;
 
 namespace winsandbox.Stargates
 {
-	[Library("ent_stargate", Spawnable = true, Title = "Stargate")]
+	[Library("ent_stargate", Spawnable = true, Title = "Milky Way Stargate")]
 	[Hammer.EditorModel("models/stargates/stargate.vmdl")]
 	public partial class Stargate : AnimEntity, IUse
 	{
 		[Net]
-		[Property("Address", Group = "Stargate")]
+		[Property("Address", Group = "Stargate",)]
 		public string Address { get; private set; }
 		[Net]
 		public bool Busy { get; private set; }
@@ -22,7 +22,9 @@ namespace winsandbox.Stargates
 		private Stargate OtherGate;
 
 		private EventHorizon eventHorizon;
-		private List<Chevron> chevrons = new();
+		private Ring ring;
+		public List<Chevron> chevrons = new();
+
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -38,17 +40,24 @@ namespace winsandbox.Stargates
 			{
 				List<char> PotentialSymbols = new();
 				PotentialSymbols.AddRange( Utils.AddressSymbols );
-				for ( int i = 0; i < 7; i++ )
+				for ( int i = 0; i < 6; i++ )
 				{
 					int random = Rand.Int( 0, PotentialSymbols.Count - 1 );
 					Address += PotentialSymbols[random];
 					PotentialSymbols.RemoveAt( random );
 				}
 			}
+
+			var centre = GetAttachment( "Centre" ).GetValueOrDefault();
 			eventHorizon = new();
 			eventHorizon.Position = Position;
 			eventHorizon.Rotation = Rotation;
 			eventHorizon.SetParent( this );
+
+			ring = new();
+			ring.Position = centre.Position;
+			ring.Rotation = Rotation;
+			ring.SetParent( this );
 			
 			for (int i = 0; i < 9; i++ )
 			{
@@ -76,13 +85,6 @@ namespace winsandbox.Stargates
 			menu.SetGate( this );
 		}
 
-		public async void Glow()
-		{
-			GlowActive = true;
-			await Task.DelaySeconds( 5 );
-			GlowActive = false;
-		}
-
 		public Stargate FindGate(string address = null)
 		{
 			return All.OfType<Stargate>().Where( x => x.Address == address && x.Address != Address).FirstOrDefault();
@@ -97,7 +99,7 @@ namespace winsandbox.Stargates
 			if ( Busy )
 				return false;
 
-			var otherGate = FindGate( address );
+			var otherGate = FindGate( address == null ?  OtherAddress : address);
 			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy ) //TODO: Handle busy gate as fail
 				return false;
 			OtherAddress = address;
@@ -138,13 +140,20 @@ namespace winsandbox.Stargates
 			SetChevrons( false );
 		}
 
+		public void Reset()
+		{
+			SetChevrons( false );
+			currentChevron = 0;
+			dialling = false;
+		}
+
 		public void SetChevrons(bool state)
 		{
 			if ( IsClient )
 				return;
 			foreach( Chevron chev in chevrons )
 			{
-				chev.Toggle();
+				chev.Toggle(state: state);
 			}
 		}
 
@@ -153,36 +162,71 @@ namespace winsandbox.Stargates
 			base.OnDestroy();
 
 			Disconnect();
-		}	
+		}
 
-		public void Teleport(Entity ent)
+		public void RotateRing( float degrees )
+		{
+			ring.SetSpecificAngle(degrees);
+		}
+
+		public async void Teleport(Entity ent)
 		{
 			if ( !IsServer )
 				return;
 
-			if ( true )
+			if ( ent is SandboxPlayer ply )
 			{
-				ent.Rotation = Rotation.LookAt( (OtherGate.Rotation.Forward * 100 - ent.Position).WithZ( 0 ).Normal );
-				ent.EyeRot = ent.Rotation;
+				var controller = new UselessPlayerController();
+				var oldController = ply.Controller;
+				ply.Controller = controller;
+
+				var DeltaAngle = OtherGate.eventHorizon.Rotation.Angles() - this.eventHorizon.Rotation.Angles();
+
+
+				ply.EyeRot = Rotation.From( ply.EyeRot.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
+				ply.Rotation = Rotation.From( ply.EyeRot.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
+
+				Log.Info( ply.GetActiveController() );
+				Log.Info("player came through, tried to rotate");
+				await GameTask.NextPhysicsFrame();
+				ply.Controller = oldController;
 			}
 
-			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 100;
+			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 80;
+			ent.ResetInterpolation();
 
-			ent.Velocity = new Vector3( 0, 0, 0 );
+			//ent.Velocity = new Vector3( 0, 0, 0 );
 		}
 
-		[Net]
-		public bool ShouldDisconnect { get; set; }
-
-		[Event.Tick]
-		public void Tick()
+		[ClientRpc]
+		public void fuck( )
 		{
-			//Log.Info( $"ShouldDisconnect:{ShouldDisconnect}" );
-			if ( ShouldDisconnect == true)
+			Log.Info( Input.Rotation );
+			Log.Info( Input.Rotation );
+		}
+
+		[ServerCmd]
+		public static void UI_Disconnect( int GateIdent )
+		{
+			if ( Entity.FindByIndex(GateIdent) is Stargate g && g.IsValid() )
 			{
-				ShouldDisconnect = false;
-				Log.Info($"{IsClient} {IsServer} Attempted Disconnect");
-				Disconnect();
+				if ( !g.Busy )
+				{
+					g.Reset();
+					return;
+				}
+				g.Disconnect();
+			}
+		}
+
+		[ServerCmd]
+		public static void UI_Connect( int GateIdent, string address )
+		{
+			if ( Entity.FindByIndex( GateIdent ) is Stargate g && g.IsValid() )
+			{
+				/*g.OtherAddress = address;
+				g.dialling = true;*/
+				g.Connect( address );
 			}
 		}
 	}

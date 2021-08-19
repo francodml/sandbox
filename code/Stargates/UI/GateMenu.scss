@@ -10,7 +10,7 @@
     position: absolute;
     font-family: poppins;
     opacity: 1;
-    background-color: rgba( #111, 0.5 );
+    background-color: rgba( #555, 0.7 );
     backdrop-filter: blur( 10px );
     display: flex;
     flex-wrap: wrap;
@@ -57,9 +57,38 @@
         .title {
             padding: 10px 10px;
             font-size: 13px;
-            align-items: center;
+            align-self: center;
             font-weight: 600;
             color: #fff;
+        }
+    }
+
+    .content {
+        display: flex;
+        width: 100%;
+        padding: 10px;
+        justify-content: space-around;
+
+        button {
+            text-align: center;
+            align-self:center;
+            border-radius: 100%;
+            height: 35px;
+            background-color: rgba(sienna, 0.7);
+        }
+
+        textentry{
+            display: flex;
+            margin: 10px;
+            flex-direction: column;
+            max-width: max-content;
+            color: #fff;
+
+            .placeholder {
+                border-top: 1px solid darkgray;
+                color: darkgray;
+                padding: 0px 0px;
+            }
         }
     }
 }

@@ -25,10 +25,10 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						filename = "models/Stargates/Chevron_SG1.fbx"
+						filename = "models/stargates/chevron_sg1.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
-						import_scale = 0.7
+						import_scale = 1.0
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
@@ -47,27 +47,7 @@
 				[
 					{
 						_class = "AnimFile"
-						name = "Chevron_SG1_idle"
-						activity_name = ""
-						activity_weight = 1
-						weight_list_name = ""
-						fade_in_time = 0.2
-						fade_out_time = 0.2
-						looping = true
-						delta = false
-						worldSpace = false
-						hidden = false
-						anim_markup_ordered = false
-						disable_compression = false
-						source_filename = "models/Stargates/Chevron_SG1_idle.fbx"
-						start_frame = -1
-						end_frame = -1
-						framerate = -1.0
-						reverse = false
-					},
-					{
-						_class = "AnimFile"
-						name = "Chevron_SG1_close"
+						name = "close"
 						activity_name = ""
 						activity_weight = 1
 						weight_list_name = ""
@@ -87,7 +67,7 @@
 					},
 					{
 						_class = "AnimFile"
-						name = "Chevron_SG1_open"
+						name = "open"
 						activity_name = ""
 						activity_weight = 1
 						weight_list_name = ""
@@ -104,6 +84,23 @@
 						end_frame = -1
 						framerate = -1.0
 						reverse = false
+					},
+					{
+						_class = "EmptyAnim"
+						name = "idle"
+						activity_name = ""
+						activity_weight = 1
+						weight_list_name = ""
+						fade_in_time = 0.2
+						fade_out_time = 0.2
+						looping = false
+						delta = false
+						worldSpace = false
+						hidden = false
+						anim_markup_ordered = false
+						disable_compression = false
+						frame_count = 1
+						frame_rate = 30
 					},
 				]
 				default_root_bone_name = ""
@@ -144,6 +141,6 @@
 		]
 		model_archetype = ""
 		primary_associated_entity = ""
-		anim_graph_name = ""
+		anim_graph_name = "models/stargates/chevron_sg1.vanmgrph"
 	}
 }

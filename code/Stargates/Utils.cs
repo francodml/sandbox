@@ -7,7 +7,7 @@ namespace winsandbox.Stargates
 {
 	public static partial class Utils
 	{
-		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".ToList();
+		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*!".ToList();
 		public static Dictionary<Type, bool> IgnoredTypes = new()
 		{
 			[typeof(EventHorizon)] = true,
@@ -44,49 +44,34 @@ namespace winsandbox.Stargates
 			}
 		}
 
-		[ServerCmd("rotateplayer")]
-		public static void RotatePlayer()
+		[ServerCmd("sg_animate_chevron")]
+		public static void AnimateChevron( int index = 0 )
 		{
-			var ply = ConsoleSystem.Caller.Pawn as SandboxPlayer;
+			var ply = ConsoleSystem.Caller.Pawn;
 
-			Rotation rot2 = Rotation.LookAt( Vector3.Zero, Vector3.Up );
-
-			var newRot = new Vector3( 0, 0, 0 );
-			ply.Rotation = rot2;
-			ply.EyeRot = rot2;
-
-			var anim = ply.Animator as StandardPlayerAnimator;
-			anim.DoRotation( rot2 );
-
-			ply.SetAnimLookAt( "aim_eyes", newRot );
-			ply.SetAnimLookAt( "aim_head", newRot );
-			ply.SetAnimLookAt( "aim_body", newRot );
-
-			ply.SetAnimFloat( "aim_eyes_weight", 1.0f );
-			ply.SetAnimFloat( "aim_head_weight", 1.0f );
-			ply.SetAnimFloat( "aim_body_weight", 1.0f );
+			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+				.Ignore( ply )
+				.WithTag( "IsStargate" )
+				.Run();
+			if ( tr.Hit && tr.Entity.IsValid() && tr.Entity is Stargate sg )
+			{
+				sg.chevrons[index].Animate();
+			}
 		}
 
-		[ClientCmd("cl_rotateplayer")]
-		public static void clrotateplayer()
+		[ServerCmd( "sg_rotate_ring" )]
+		public static void RotateRing( float degrees = 0 )
 		{
-			var ply = Local.Pawn as SandboxPlayer;
-			var newRot = new Vector3( 10000, 1000, 1000 );
+			var ply = ConsoleSystem.Caller.Pawn;
 
-			Rotation rot2 = Rotation.LookAt( Vector3.Zero, Vector3.Up );
-
-			ply.EyeRot = rot2;
-			ply.Rotation = rot2;
-			Input.Rotation = rot2;
-			var anim = ply.Animator as StandardPlayerAnimator;
-			anim.DoRotation(rot2);
-			ply.SetAnimLookAt( "aim_eyes", newRot );
-			ply.SetAnimLookAt( "aim_head", newRot );
-			ply.SetAnimLookAt( "aim_body", newRot );
-
-			ply.SetAnimFloat( "aim_eyes_weight", 1.0f );
-			ply.SetAnimFloat( "aim_head_weight", 1.0f );
-			ply.SetAnimFloat( "aim_body_weight", 1.0f );
+			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+				.Ignore( ply )
+				.WithTag( "IsStargate" )
+				.Run();
+			if ( tr.Hit && tr.Entity.IsValid() && tr.Entity is Stargate sg )
+			{
+				sg.RotateRing( degrees );
+			}
 		}
-    }
+	}
 }
