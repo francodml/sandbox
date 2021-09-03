@@ -12,18 +12,23 @@ namespace winsandbox.Stargates
 	[Hammer.EditorModel("models/stargates/stargate.vmdl")]
 	public partial class Stargate : AnimEntity, IUse
 	{
-		[Net]
+		
 		[Property("Address", Group = "Stargate")]
-		public string Address { get; private set; }
-		[Net]
-		public bool Busy { get; private set; }
+		[Net] public string Address { get; private set; }
 
-		private string OtherAddress;
+		[Property( "Point of Origin", Group = "Stargate" )]
+		[Net] public string PointOfOrigin { get; private set; } = "#";
+		[Net] public bool Busy { get; private set; }
+		[Net] public Connection ConnectionType { get; private set; } = Connection.None;
+		[Net] public string CurrentRingSymbol => ring.CurrentSymbol;
+		public DHD DHD { get; set; }
+
+		[Net] private string OtherAddress { get; set; } = "";
 		private Stargate OtherGate;
 
 		private EventHorizon eventHorizon;
-		private Ring ring;
-		public List<Chevron> chevrons = new();
+		[Net] private Ring ring { get; set; }
+		private List<Chevron> chevrons = new();
 
 		public override void Spawn()
 		{
@@ -72,6 +77,12 @@ namespace winsandbox.Stargates
 
 		}
 		public bool IsUsable( Entity user ) => true;
+
+		internal void RotateRingToSymbol( string symbol )
+		{
+			ring.RotateToSymbol( symbol );
+		}
+
 		public bool OnUse( Entity user )
 		{
 			OpenMenu( To.Single( user ) );
@@ -87,6 +98,8 @@ namespace winsandbox.Stargates
 
 		public Stargate FindGate(string address = null)
 		{
+			if ( address == null )
+				address = OtherAddress;
 			return All.OfType<Stargate>().Where( x => x.Address == address && x.Address != Address).FirstOrDefault();
 		}
 
@@ -101,7 +114,10 @@ namespace winsandbox.Stargates
 
 			var otherGate = FindGate( address == null ?  OtherAddress : address);
 			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy ) //TODO: Handle busy gate as fail
+			{
+				FailConnection();
 				return false;
+			}
 			OtherAddress = address;
 			OtherGate = otherGate;
 
@@ -109,14 +125,25 @@ namespace winsandbox.Stargates
 
 			eventHorizon.Enable();
 
+			ConnectionType = Connection.Outgoing;
 			Busy = true;
 			SetChevrons( true );
 
 			return true;
 		}
 
+		public async void FailConnection()
+		{
+			PlaySound( "stargates.milkyway.fail" );
+			await Task.DelaySeconds( 3.5f );
+			PlaySound( "stargates.milkyway.chevron.close" );
+			SetChevrons( false );
+			Reset();
+		}
+
 		public void ConnectIncoming(Stargate other)
 		{
+			ConnectionType = Connection.Incoming;
 			OtherAddress = other.Address;
 			OtherGate = other;
 			Busy = true;
@@ -129,6 +156,7 @@ namespace winsandbox.Stargates
 			if ( !IsServer | OtherGate == null )
 				return;
 
+			ConnectionType = Connection.None;
 			OtherAddress = string.Empty;
 			eventHorizon.Disable();
 			Busy = false;
@@ -138,13 +166,19 @@ namespace winsandbox.Stargates
 
 			OtherGate = null;
 			SetChevrons( false );
+			Reset();
 		}
 
 		public void Reset()
 		{
-			SetChevrons( false );
 			currentChevron = 0;
 			dialling = false;
+			OtherAddress = "";
+			chevrons[6].ResetBones();
+			ring.Stop();
+			AddressIndexMap = null;
+			if ( DHD != null )
+				DHD.Reset();
 		}
 
 		public void SetChevrons(bool state)
@@ -164,9 +198,9 @@ namespace winsandbox.Stargates
 			Disconnect();
 		}
 
-		public void RotateRing( float degrees )
+		public void ToggleRing()
 		{
-			ring.SetSpecificAngle(degrees);
+			ring.Toggle();
 		}
 
 		public async void Teleport(Entity ent)
@@ -178,7 +212,10 @@ namespace winsandbox.Stargates
 			{
 				var controller = new UselessPlayerController();
 				var oldController = ply.Controller;
-				ply.Controller = controller;
+				using ( Prediction.Off() )
+				{
+					ply.Controller = controller;
+				}
 
 				var DeltaAngle = OtherGate.eventHorizon.Rotation.Angles() - this.eventHorizon.Rotation.Angles();
 
@@ -186,48 +223,24 @@ namespace winsandbox.Stargates
 				ply.EyeRot = Rotation.From( ply.EyeRot.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
 				ply.Rotation = Rotation.From( ply.EyeRot.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
 
-				Log.Info( ply.GetActiveController() );
-				Log.Info("player came through, tried to rotate");
 				await GameTask.NextPhysicsFrame();
-				ply.Controller = oldController;
-			}
-
-			ent.Position = OtherGate.Position + OtherGate.Rotation.Forward * 80;
-			ent.ResetInterpolation();
-
-			//ent.Velocity = new Vector3( 0, 0, 0 );
-		}
-
-		[ClientRpc]
-		public void fuck( )
-		{
-			Log.Info( Input.Rotation );
-			Log.Info( Input.Rotation );
-		}
-
-		[ServerCmd]
-		public static void UI_Disconnect( int GateIdent )
-		{
-			if ( Entity.FindByIndex(GateIdent) is Stargate g && g.IsValid() )
-			{
-				if ( !g.Busy )
+				using ( Prediction.Off() )
 				{
-					g.Reset();
-					return;
+					ply.Controller = oldController;
 				}
-				g.Disconnect();
 			}
+			ent.Position = OtherGate.GetAttachment("Centre").GetValueOrDefault().Position + OtherGate.Rotation.Forward * 100;
+			ent.ResetInterpolation();
+			OtherGate.PlaySound( "stargates.milkyway.pass" );
+
+			ent.Velocity = OtherGate.Rotation.Forward * ent.Velocity.Length;
 		}
 
-		[ServerCmd]
-		public static void UI_Connect( int GateIdent, string address )
+		public enum Connection
 		{
-			if ( Entity.FindByIndex( GateIdent ) is Stargate g && g.IsValid() )
-			{
-				/*g.OtherAddress = address;
-				g.dialling = true;*/
-				g.Connect( address );
-			}
+			None,
+			Incoming,
+			Outgoing
 		}
 	}
 }

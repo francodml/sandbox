@@ -9,9 +9,11 @@ namespace winsandbox.Stargates
 {
 	public partial class Chevron : AnimEntity
 	{
-		public bool Engaged { get; private set; }
-		public bool Continue { get; private set; }
+		public bool Engaged { get; private set; } = false;
+		public bool Continue { get; private set; } = true;
 		public Chevron OtherChevron { get; set; }
+		public bool IsFinalLock { get; set; } = false;
+		public bool FailedLock { get; set; } = false;
 		private PointLightEntity light;
 		private bool stayLit;
 
@@ -28,7 +30,6 @@ namespace winsandbox.Stargates
 			light.Brightness = 2;
 			light.Enabled = false;
 			UseAnimGraph = true;
-			Continue = true;
 		}
 
 		public void Toggle( bool silent = true )
@@ -36,34 +37,36 @@ namespace winsandbox.Stargates
 			Toggle( !Engaged, silent );
 		}
 
-		public void Toggle (bool state, bool silent = true )
+		public void Toggle ( bool state, bool silent = true )
 		{
 			if ( !this.IsValid() )
 				return;
 			Engaged = state;
 			SetMaterialGroup( state ? 1 : 0 );
 			if ( !silent )
-				PlaySound( $"stargates.milkyway.chevron{(state ? "" : ".close")}" );
+				PlaySound( $"stargates.milkyway.chevron.{(state ? "open" : "close")}" );
 			light.Enabled = state;
 		}
 
 		public async void Animate(bool StayLit = false)
 		{
 			Continue = false;
+			SetAnimBool( "IsFinalLock", IsFinalLock );
+			SetAnimBool( "FailedLock", FailedLock );
 			SetAnimBool( "TriggerLock", true );
 			stayLit = StayLit;
 			await GameTask.Delay( 10 );
 			SetAnimBool( "TriggerLock", false );
 		}
 
-		public override void OnAnimGraphCreated()
+		protected override void OnAnimGraphCreated()
 		{
 			base.OnAnimGraphCreated();
 
 			SetAnimBool( "TriggerLock", false );
 		}
 
-		public override void OnAnimGraphTag( string tag, AnimGraphTagEvent fireMode )
+		protected override void OnAnimGraphTag( string tag, AnimGraphTagEvent fireMode )
 		{
 			base.OnAnimGraphTag( tag, fireMode );
 
@@ -71,7 +74,7 @@ namespace winsandbox.Stargates
 				return;
 			if (tag == "RegularSound" && fireMode != AnimGraphTagEvent.End )
 			{
-				PlaySound("stargates.milkyway.chevron");
+				PlaySound("stargates.milkyway.chevron.open");
 			}
 
 			if ( tag == "OpenSound" && fireMode != AnimGraphTagEvent.End )
@@ -84,12 +87,12 @@ namespace winsandbox.Stargates
 				PlaySound( "stargates.milkyway.chevron.close" );
 			}
 
-			if (tag == "Lit" )
+			if ( tag == "Lit" )
 			{
 				if ( stayLit && Engaged )
 					return;
-				Toggle(false);
-				if ( OtherChevron != null)
+				Toggle((fireMode == AnimGraphTagEvent.End || IsFinalLock));
+				if ( OtherChevron != null )
 				{
 					OtherChevron.Toggle();
 					OtherChevron = null;
@@ -98,6 +101,8 @@ namespace winsandbox.Stargates
 			if (tag == "CooldownEnd" && fireMode == AnimGraphTagEvent.End )
 			{
 				Continue = true;
+				IsFinalLock = false;
+				FailedLock = false;
 			}
 		}
 	}

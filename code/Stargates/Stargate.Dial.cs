@@ -9,9 +9,13 @@ namespace winsandbox.Stargates
 {
 	public partial class Stargate
 	{
+		public bool DenyDHDInput => !string.IsNullOrEmpty(OtherAddress) && OtherAddress.Length == 8;
 		private int currentChevron = 0;
 		private bool dialling = false;
 		private bool locking = false;
+		private bool doingStuff;
+
+		private Dictionary<string, int> AddressIndexMap;
 
 		public void EncodeChevron()
 		{
@@ -19,7 +23,7 @@ namespace winsandbox.Stargates
 				return;
 			if ( (currentChevron == 9 || currentChevron == 6) && !chevrons[6].Engaged)
 			{
-				LockChevron();
+				LockChevron(true);
 				return;
 			}
 			chevrons[6].OtherChevron = chevrons[currentChevron];
@@ -29,30 +33,104 @@ namespace winsandbox.Stargates
 				currentChevron++;
 		}
 
-		public void LockChevron()
+		public void LockChevron( bool autoconnect = false )
 		{
-			chevrons[6].Animate(true);
+			var chevron = chevrons[6];
+			chevron.IsFinalLock = true;
+			if ( FindGate() == null )
+				chevron.FailedLock = true;
+			chevron.Animate(true);
 			currentChevron = 0;
 			dialling = false;
-			locking = true;
+			locking = autoconnect;
 		}
 
-		[ServerCmd]
-		public static void UI_Animate( int GateIdent )
+		public void DHDKeypress( string glyph, bool state )
 		{
-			if ( FindByIndex(GateIdent) is Stargate g )
+			if ( AddressIndexMap == null )
+				AddressIndexMap = new();
+			switch ( glyph )
 			{
-				g.dialling = true;
+				case "SUBMIT":
+					if ( ConnectionType != Connection.None )
+					{
+						Disconnect();
+						DHD.Reset();
+						break;
+					}
+					Connect();
+					currentChevron = 0;
+					break;
+				case "#":
+					LockChevron();
+					break;
+				default:
+					if ( state )
+					{
+						if ( OtherAddress.Length == 8 )
+							break;
+						OtherAddress += glyph;
+						AddressIndexMap[glyph] = AddressIndexMap.Count;
+						chevrons[currentChevron].Toggle( silent: false );
+						currentChevron++;
+						if ( OtherAddress.Length == 6 && currentChevron == 6 )
+							currentChevron++;
+					} else
+					{
+						if ( !AddressIndexMap.ContainsKey( glyph ) )
+							break;
+						var index = AddressIndexMap[glyph];
+						currentChevron--;
+						if ( OtherAddress.Length == 6 && currentChevron == 6 )
+							currentChevron--;
+						chevrons[currentChevron].Toggle( silent: false );
+						OtherAddress = OtherAddress.Remove( index, 1 );
+						if ( OtherAddress.Length == 0 )
+						{
+							Reset();
+							break;
+						}
+						RegenerateIndexMap();
+					}
+					break;
 			}
+		}
+
+		private void RegenerateIndexMap()
+		{
+			AddressIndexMap = new();
+			for (int i = 0; i < OtherAddress.Length; i++ )
+			{
+				AddressIndexMap[OtherAddress[i].ToString()] = i;
+			}
+		}
+
+		public async void WaitAWhile()
+		{
+			doingStuff = true;
+			await Task.DelaySeconds( 0.6f );
+			EncodeChevron();
+			doingStuff = false;
 		}
 
 		[Event.Tick.Server]
 		public void Tick()
 		{
-			if ( dialling && chevrons[6].Continue )
+			if ( dialling && !string.IsNullOrEmpty(OtherAddress) )
 			{
-				EncodeChevron();
+				var desiredSymbol = currentChevron < OtherAddress.Length ? OtherAddress[currentChevron].ToString() : "#";
+				if ( !chevrons[6].Continue )
+					return;
+				if ( !ring.Rotating && ring.CurrentSymbol != desiredSymbol )
+					ring.RotateToSymbol( desiredSymbol );
+				if ( !ring.Rotating && ring.CurrentSymbol == desiredSymbol && !chevrons[currentChevron].Engaged && !doingStuff )
+				{
+					WaitAWhile();
+				}
 			}
+
+			if ( currentChevron > 8 )
+				currentChevron = 6;
 
 			if ( locking && chevrons[6].Continue )
 			{
@@ -60,6 +138,5 @@ namespace winsandbox.Stargates
 				Connect();
 			}
 		}
-
 	}
 }
