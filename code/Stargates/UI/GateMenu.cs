@@ -14,6 +14,7 @@ namespace winsandbox.Stargates
 		public Stargate Gate { get; private set; }
 		public Button gateaddress;
 		public TextEntry remoteAddress;
+		private Label currentGlyph;
 
 		[Library]
 		public GateMenu()
@@ -47,7 +48,11 @@ namespace winsandbox.Stargates
 
 				content.Add.Button( "Disconnect", () => Stargate.UI_Disconnect( Gate.NetworkIdent ) );
 
-				content.Add.Button( "Animate", () => Stargate.UI_Animate( Gate.NetworkIdent ) );
+				content.Add.Button( "Animate", () => Stargate.UI_Animate( Gate.NetworkIdent, remoteAddress.Text.ToUpper() ) );
+
+				content.Add.Button( "Toggle Ring", () => Stargate.UI_ToggleRing( Gate.NetworkIdent ) );
+
+				currentGlyph = content.Add.Label( $"Current Glyph:", "glyphlabel" );
 			}
 		}
 
@@ -55,6 +60,15 @@ namespace winsandbox.Stargates
 		{
 			this.Gate = gate;
 			gateaddress.Text = Gate.Address;
+		}
+
+		public override void Tick()
+		{
+			base.Tick();
+			if ( Gate.IsValid() && currentGlyph.Text != Gate.CurrentRingSymbol)
+			{
+				currentGlyph.SetText( $"Current Glyph: {Gate.CurrentRingSymbol}" );
+			}
 		}
 
 	}

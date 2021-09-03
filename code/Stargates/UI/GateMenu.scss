@@ -58,6 +58,7 @@
             padding: 10px 10px;
             font-size: 13px;
             align-self: center;
+            font-family: Stargate Address Glyphs SG1;
             font-weight: 600;
             color: #fff;
         }
@@ -67,17 +68,29 @@
         display: flex;
         width: 100%;
         padding: 10px;
-        justify-content: space-around;
+        //justify-content: space-around;
+
+        .glyphlabel {
+            padding: 20px, inherit;
+        }
 
         button {
             text-align: center;
-            align-self:center;
-            border-radius: 100%;
+            align-self: center;
+            border-radius: 50%;
             height: 35px;
-            background-color: rgba(sienna, 0.7);
+            background-color: rgba(lightgray, 0.7);
+
+            label {
+                text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+            }
+
+            &:hover {
+                background-color: orangered;
+            }
         }
 
-        textentry{
+        textentry {
             display: flex;
             margin: 10px;
             flex-direction: column;
