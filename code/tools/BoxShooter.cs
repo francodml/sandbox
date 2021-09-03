@@ -30,8 +30,8 @@
 				Rotation = Owner.EyeRot
 			};
 
-			ent.SetModel( "models/rust_props/barrels/fuel_barrel.vmdl" );
-			ent.Velocity = Owner.EyeRot.Forward * 100000;
+			ent.SetModel( "models/citizen_props/crate01.vmdl" );
+			ent.Velocity = Owner.EyeRot.Forward * 10000;
 		}
 	}
 }
