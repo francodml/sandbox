@@ -41,9 +41,19 @@ namespace winsandbox.Stargates
 			if ( !Enabled )
 				return;
 			var gate = Parent as Stargate;
-			if (IsServer)
+			if ( IsServer )
 			{
 				PlaySound( "stargates.milkyway.pass" );
+				if (gate.ConnectionType == Stargate.Connection.Incoming )
+				{
+					if (other is SandboxPlayer ply )
+					{
+						ply.OnKilled();
+						return;
+					}
+					other.Delete();
+					return;
+				}
 				gate.Teleport( other );
 			}
 		}
