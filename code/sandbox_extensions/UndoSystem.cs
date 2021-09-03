@@ -7,7 +7,7 @@ using Sandbox;
 
 namespace winsandbox.sandbox_extensions
 {
-	public static class UndoSystem
+	public static partial class UndoSystem
 	{
 		static Dictionary<Client, List<int>> UndoList = new();
 
@@ -43,8 +43,14 @@ namespace winsandbox.sandbox_extensions
 
 			ent.Delete();
 			PlayerList.RemoveAt( PlayerList.Count-1 );
-			Sound.FromScreen( "ui.undo" );
 			Log.Info( $"Removed entity {ent.NetworkIdent} ({ent.GetType()})" );
+			undo_client(To.Single(owner));
+		}
+
+		[ClientRpc]
+		public static void undo_client()
+		{
+			Sound.FromScreen( "ui.undo" );
 		}
 
 		[ServerCmd]
