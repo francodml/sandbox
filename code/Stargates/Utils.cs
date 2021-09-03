@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Sandbox;
+using Sandbox.UI;
 
 namespace winsandbox.Stargates
 {
 	public static partial class Utils
 	{
-		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*!".ToList();
+		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*@".ToList();
 		public static Dictionary<Type, bool> IgnoredTypes = new()
 		{
 			[typeof(EventHorizon)] = true,
@@ -44,8 +45,8 @@ namespace winsandbox.Stargates
 			}
 		}
 
-		[ServerCmd("sg_animate_chevron")]
-		public static void AnimateChevron( int index = 0 )
+		[ServerCmd( "sg_rotate_ring" )]
+		public static void RotateRing( string symbol )
 		{
 			var ply = ConsoleSystem.Caller.Pawn;
 
@@ -55,23 +56,26 @@ namespace winsandbox.Stargates
 				.Run();
 			if ( tr.Hit && tr.Entity.IsValid() && tr.Entity is Stargate sg )
 			{
-				sg.chevrons[index].Animate();
+				sg.RotateRingToSymbol(symbol.ToUpper());
 			}
 		}
 
-		[ServerCmd( "sg_rotate_ring" )]
-		public static void RotateRing( float degrees = 0 )
+		[ClientCmd]
+		public static void OutputRingTemplate()
 		{
-			var ply = ConsoleSystem.Caller.Pawn;
+			string result = "";
+			float nine = 9.235f;
 
-			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
-				.Ignore( ply )
-				.WithTag( "IsStargate" )
-				.Run();
-			if ( tr.Hit && tr.Entity.IsValid() && tr.Entity is Stargate sg )
+			for (int i = 0; i < 39; i++ )
 			{
-				sg.RotateRing( degrees );
+				var suffix = i % 2 == 1 ? "\n" : "";
+				var template = $"[\"\"] = {nine * i}f, {suffix}";
+				result += template;
 			}
+
+			Log.Info( result );
+
+			Clipboard.SetText( result );
 		}
 	}
 }
