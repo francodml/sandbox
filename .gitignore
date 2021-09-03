@@ -10,6 +10,7 @@ tools_thumbnail_cache.bin
 *.pdb
 *.blend
 *.blend1
+.blends
 *.obj
 .intermediate/net5.0/sandbox.deps.json
 maps/editor/_bakeresourcecache/toolscene_default_baked/*
