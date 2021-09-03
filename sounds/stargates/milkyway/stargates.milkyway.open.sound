@@ -3,14 +3,14 @@
 	data = 
 	{
 		UI = false
-		Volume = 0.8
+		Volume = 1.0
 		VolumeRandom = 0.0
 		Pitch = 1.0
 		PitchRandom = 0.0
 		DistanceMax = 1000.0
 		Sounds = 
 		[
-			"sounds/stargates/milkyway/open.vsnd",
+			"sounds/stargates/milkyway/puddle/open.vsnd",
 		]
 	}
 }

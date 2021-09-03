@@ -10,7 +10,7 @@
 		DistanceMax = 1000.0
 		Sounds = 
 		[
-			"sounds/stargates/milkyway/close.vsnd",
+			"sounds/stargates/milkyway/puddle/close.vsnd",
 		]
 	}
 }
