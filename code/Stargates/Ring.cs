@@ -59,6 +59,7 @@ namespace winsandbox.Stargates
 		{
 			base.Spawn();
 			SetModel( "models/stargates/ring.vmdl" );
+			Transmit = TransmitType.Always;
 		}
 		protected override void OnDestroy()
 		{
