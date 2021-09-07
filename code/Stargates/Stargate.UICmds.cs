@@ -52,5 +52,23 @@ namespace winsandbox.Stargates
 			}
 		}
 
+		[ServerCmd]
+		public static void UI_ForceReset( int GateIdent )
+		{
+			if ( Entity.FindByIndex( GateIdent ) is Stargate g && g.IsValid() )
+			{
+				g.Reset();
+			}
+		}
+
+		[ServerCmd]
+		public static void UI_SetGateAddress ( int GateIdent, string NewAddress )
+		{
+			if ( Entity.FindByIndex(GateIdent) is Stargate g && g.IsValid() )
+			{
+				g.Address = NewAddress;
+			}
+		}
+
 	}
 }
