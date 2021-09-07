@@ -14,6 +14,7 @@ namespace winsandbox.Stargates
 		public Stargate Gate { get; private set; }
 		public Button gateaddress;
 		public TextEntry remoteAddress;
+		public TextEntry ourAddress;
 		private Label currentGlyph;
 
 		[Library]
@@ -33,16 +34,28 @@ namespace winsandbox.Stargates
 
 			var content = Add.Panel( "content" );
 			{
+				ourAddress = content.Add.TextEntry( "" );
+				ourAddress.AddClass( "addressinput" );
+				ourAddress.Placeholder = "Gate Address";
+				ourAddress.AddEventListener( "onchange", ( x ) => {
+					ourAddress.Text = CleanAddress( ourAddress.Text );
+				} );
+
+				content.Add.Button( "Set", () =>
+				{
+					if ( ourAddress.Text.Length == 6 )
+					{
+						Sound.FromScreen( "stargate.ui.confirm" );
+						Stargate.UI_SetGateAddress( Gate.NetworkIdent, ourAddress.Text.ToUpper() );
+					}
+				} );
+
 				remoteAddress = content.Add.TextEntry( "" );
+				remoteAddress.AddClass( "addressinput" );
 				remoteAddress.Placeholder = "Remote Address";
 				remoteAddress.AddEventListener( "onchange", ( x ) => {
-
-					if (remoteAddress.Text.Length > 7 )
-					{
-						remoteAddress.Text = remoteAddress.Text.Substring( 0, 7 );
-					}
-
-				});
+					remoteAddress.Text = CleanAddress(remoteAddress.Text);
+				} );
 
 				content.Add.Button( "Connect", () => Stargate.UI_Connect( Gate.NetworkIdent, remoteAddress.Text.ToUpper() ) );
 
@@ -52,6 +65,8 @@ namespace winsandbox.Stargates
 
 				content.Add.Button( "Toggle Ring", () => Stargate.UI_ToggleRing( Gate.NetworkIdent ) );
 
+				content.Add.Button( "Force Reset", () => Stargate.UI_ForceReset( Gate.NetworkIdent ) );
+
 				currentGlyph = content.Add.Label( $"Current Glyph:", "glyphlabel" );
 			}
 		}
@@ -60,12 +75,30 @@ namespace winsandbox.Stargates
 		{
 			this.Gate = gate;
 			gateaddress.Text = Gate.Address;
+			ourAddress.Text = Gate.Address;
+		}
+
+		public string CleanAddress( string address )
+		{
+			address = address.RemoveBadCharacters();
+			address = address.ToUpper();
+			if ( address.Length > 6 )
+			{
+				address.Substring( 0, 6 );
+			}
+
+			var x = address.Where( ( c, i ) => i > 0 && address.Last() == address[i-1] ).Cast<char?>().FirstOrDefault() != null;
+			if ( x )
+			{
+				address = address.Remove( address.Length - 1 );
+			}
+			return address;
 		}
 
 		public override void Tick()
 		{
 			base.Tick();
-			if ( Gate.IsValid() && currentGlyph.Text != Gate.CurrentRingSymbol)
+			if ( Gate != null && currentGlyph.Text != Gate.CurrentRingSymbol )
 			{
 				currentGlyph.SetText( $"Current Glyph: {Gate.CurrentRingSymbol}" );
 			}

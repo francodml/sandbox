@@ -68,7 +68,7 @@
         display: flex;
         width: 100%;
         padding: 10px;
-        //justify-content: space-around;
+        flex-wrap: wrap;
 
         .glyphlabel {
             padding: 20px, inherit;
@@ -79,7 +79,7 @@
             align-self: center;
             border-radius: 50%;
             height: 35px;
-            background-color: rgba(lightgray, 0.7);
+            background-color: rgba(#aaa, 0.7);
 
             label {
                 text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
@@ -90,18 +90,24 @@
             }
         }
 
-        textentry {
+        .addressinput {
             display: flex;
             margin: 10px;
             flex-direction: column;
             max-width: max-content;
+            font-family: Stargate Address Glyphs SG1;
             color: #fff;
 
             .placeholder {
+                font-family: poppins;
                 border-top: 1px solid darkgray;
                 color: darkgray;
                 padding: 0px 0px;
             }
+        }
+
+        .addresslist {
+
         }
     }
 }
