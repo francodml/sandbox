@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Sandbox;
 using Sandbox.UI;
+using winsandbox.Stargates.UI;
 
 namespace winsandbox.Stargates
 {
@@ -92,7 +93,7 @@ namespace winsandbox.Stargates
 		[ClientRpc]
 		public void OpenMenu()
 		{
-			var menu = Local.Hud.AddChild<GateMenu>();
+			var menu = Local.Hud.AddChild<GateControlPanel>();
 			menu.SetGate( this );
 		}
 
@@ -109,11 +110,13 @@ namespace winsandbox.Stargates
 				return false;
 			if ( address == null && OtherAddress == null )
 				return false;
+			else if ( OtherAddress != null )
+				address = OtherAddress;
 			if ( Busy )
 				return false;
 
 			var otherGate = FindGate( address == null ?  OtherAddress : address);
-			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy ) //TODO: Handle busy gate as fail
+			if ( otherGate == null || !otherGate.IsValid() || otherGate.Busy )
 			{
 				FailConnection();
 				return false;
@@ -128,6 +131,9 @@ namespace winsandbox.Stargates
 			ConnectionType = Connection.Outgoing;
 			Busy = true;
 			SetChevrons( true );
+
+			if ( DHD != null )
+				DHD.UpdateFromGate();
 
 			return true;
 		}
