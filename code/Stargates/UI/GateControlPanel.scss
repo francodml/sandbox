@@ -1,0 +1,147 @@
+﻿gatecontrolpanel {
+    width: 1200px;
+    height: 600px;
+    left: 100px;
+    top: 100px;
+    position: absolute;
+    border-radius: 5px;
+    pointer-events: all;
+    transition: opacity 0.1s ease-out;
+    position: absolute;
+    font-family: poppins;
+    background-color: rgba( #000, 0.7 );
+    backdrop-filter: blur( 10px );
+    display: flex;
+    flex-direction: column;
+    //flex-wrap: wrap;
+
+    button {
+        transition: all 0.1s ease-out;
+        padding: 6px 5px;
+        margin-right: 10px;
+        font-size: 13px;
+        align-items: center;
+        font-weight: 600;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    label {
+        padding: 10px 10px;
+        font-size: 13px;
+        font-weight: 600;
+        align-self: center;
+        color: #fff;
+    }
+
+    titlebar {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        height: 5%;
+        flex-shrink: 0;
+        background-color: rgba(#222, 0.7);
+
+        .close {
+            background-color: crimson;
+            opacity: 0.5;
+            backdrop-filter: blur(10px);
+            margin-right: 0px;
+            border-top-right-radius: 5px;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+
+        .title {
+            padding: 15px 15px;
+            align-self: center;
+        }
+    }
+
+    .content {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        padding: 10px;
+        padding-bottom: 15px;
+        flex-wrap: nowrap;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .column {
+        background-color: #555;
+        opacity: 0.8;
+        height: 100%;
+        margin: 3px;
+        display: flex;
+        flex-direction: column;
+        align-content: flex-start;
+    }
+
+    .left {
+        justify-content: left;
+        flex-basis: 25%;
+        width: 45%;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+
+        button {
+            text-align: center;
+            align-self: flex-end;
+            top: -25px;
+            border-radius: 50%;
+            height: 35px;
+            background-color: rgba(#aaa, 0.7);
+
+            label {
+                text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
+            }
+
+            &:hover {
+                background-color: dodgerblue;
+            }
+
+            &:active {
+                background-color: darkcyan;
+            }
+        }
+    }
+
+    .middle {
+        //flex-shrink: 10;
+        width: 100%;
+    }
+
+    .right {
+        flex-basis: 100%;
+        width: 45%;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .addressinput {
+        margin: 10px;
+        display: flex;
+        font-size: 20px;
+        flex-direction: row;
+        width: 50%;
+        font-family: Stargate Address Glyphs SG1;
+        color: #fff;
+
+        .placeholder {
+            position: absolute;
+            top: 25px;
+            width: 100%;
+            font-family: poppins;
+            font-size: 14px;
+            border-top: 1px solid darkgray;
+            color: darkgray;
+            padding: 0px px;
+        }
+    }
+}
