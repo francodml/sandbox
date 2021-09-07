@@ -23,7 +23,7 @@ namespace winsandbox.Stargates
 		[Net] public string CurrentRingSymbol => ring.CurrentSymbol;
 		public DHD DHD { get; set; }
 
-		[Net] private string OtherAddress { get; set; } = "";
+		[Net] public string OtherAddress { get; set; } = "";
 		private Stargate OtherGate;
 
 		private EventHorizon eventHorizon;
@@ -137,7 +137,6 @@ namespace winsandbox.Stargates
 			PlaySound( "stargates.milkyway.fail" );
 			await Task.DelaySeconds( 3.5f );
 			PlaySound( "stargates.milkyway.chevron.close" );
-			SetChevrons( false );
 			Reset();
 		}
 
@@ -149,6 +148,9 @@ namespace winsandbox.Stargates
 			Busy = true;
 			eventHorizon.Enable();
 			SetChevrons( true );
+
+			if ( DHD != null )
+				DHD.UpdateFromGate();
 		}
 
 		public void Disconnect()
@@ -171,6 +173,7 @@ namespace winsandbox.Stargates
 
 		public void Reset()
 		{
+			SetChevrons( false );
 			currentChevron = 0;
 			dialling = false;
 			OtherAddress = "";

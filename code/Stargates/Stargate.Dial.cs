@@ -21,6 +21,8 @@ namespace winsandbox.Stargates
 		{
 			if ( !IsServer )
 				return;
+			if ( DHD != null )
+				DHD.SetKey( CurrentRingSymbol, true );
 			if ( (currentChevron == 9 || currentChevron == 6) && !chevrons[6].Engaged)
 			{
 				LockChevron(true);
@@ -37,10 +39,16 @@ namespace winsandbox.Stargates
 		{
 			var chevron = chevrons[6];
 			chevron.IsFinalLock = true;
-			if ( FindGate() == null )
+			var other = FindGate();
+			if ( other == null )
 				chevron.FailedLock = true;
+			else
+			{
+				other.SetChevrons( true );
+			}
 			chevron.Animate(true);
-			currentChevron = 0;
+			if (autoconnect)
+				currentChevron = 0;
 			dialling = false;
 			locking = autoconnect;
 		}
@@ -62,7 +70,10 @@ namespace winsandbox.Stargates
 					currentChevron = 0;
 					break;
 				case "#":
-					LockChevron();
+					if ( state )
+						LockChevron();
+					else if ( chevrons[6].Engaged )
+						chevrons[6].Toggle( false, false );
 					break;
 				default:
 					if ( state )
