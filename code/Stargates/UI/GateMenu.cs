@@ -37,9 +37,7 @@ namespace winsandbox.Stargates
 				ourAddress = content.Add.TextEntry( "" );
 				ourAddress.AddClass( "addressinput" );
 				ourAddress.Placeholder = "Gate Address";
-				ourAddress.AddEventListener( "onchange", ( x ) => {
-					ourAddress.Text = CleanAddress( ourAddress.Text );
-				} );
+				ourAddress.AddEventListener( "onchange", () => ourAddress.Text = CleanupAddress( ourAddress.Text ) );
 
 				content.Add.Button( "Set", () =>
 				{
@@ -53,9 +51,7 @@ namespace winsandbox.Stargates
 				remoteAddress = content.Add.TextEntry( "" );
 				remoteAddress.AddClass( "addressinput" );
 				remoteAddress.Placeholder = "Remote Address";
-				remoteAddress.AddEventListener( "onchange", ( x ) => {
-					remoteAddress.Text = CleanAddress(remoteAddress.Text);
-				} );
+				remoteAddress.AddEventListener( "onchange", () => remoteAddress.Text = CleanupAddress( remoteAddress.Text ) );
 
 				content.Add.Button( "Connect", () => Stargate.UI_Connect( Gate.NetworkIdent, remoteAddress.Text.ToUpper() ) );
 
@@ -78,7 +74,7 @@ namespace winsandbox.Stargates
 			ourAddress.Text = Gate.Address;
 		}
 
-		public string CleanAddress( string address )
+		public string CleanupAddress( string address )
 		{
 			address = address.RemoveBadCharacters();
 			address = address.ToUpper();
