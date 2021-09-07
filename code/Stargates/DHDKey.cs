@@ -10,9 +10,11 @@ namespace winsandbox.Stargates
 {
 	public partial class DHDKey : ModelEntity, IUse
 	{
+		private bool Highlighted;
+
 		[Net] public string Glyph { get; set; } = "#";
 		[Net] public bool Active { get; private set; } = false;
-		public Color KeyColour => Active ? Color.Orange : Color.White;
+		public Color KeyColour => Active && !Highlighted ? Color.Orange : (Highlighted ? Color.Cyan : Color.White);
 		public DHD DHD => Parent as DHD;
 		public DHDKey()
 		{
@@ -38,13 +40,16 @@ namespace winsandbox.Stargates
 		{
 			if ( DHD.Stargate != null && DHD.Stargate.Busy && Glyph != "SUBMIT" )
 				return false;
-			if ( DHD.Stargate != null && DHD.Stargate.DenyDHDInput && Glyph != "#" & Glyph != "SUBMIT" )
+			if ( DHD.DenyInput && Glyph != DHD.PointOfOrigin & Glyph != "SUBMIT" )
 				return false;
 			if ( !Active )
 				PlaySound( $"dhd.milkyway.{(Glyph == "SUBMIT" ? "submit" : "press")}" );
-			if (Glyph == "SUBMIT" && !Active )
+			if ( Glyph == "SUBMIT" && !Active )
 			{
-				SubmitDelay();
+				if ( DHD.Active )
+					SubmitDelay();
+				else
+					DHD.Stargate.OpenMenu();
 				return false;
 			}
 			Active = !Active;
@@ -53,7 +58,7 @@ namespace winsandbox.Stargates
 			return false;
 		}
 
-		public void Toggle(bool state )
+		public void Toggle( bool state )
 		{
 			Active = state;
 			RenderColor = KeyColour;
@@ -62,8 +67,26 @@ namespace winsandbox.Stargates
 		[Event.Frame]
 		public void OnFrame()
 		{
+			PawnLookingAt();
 			var bbox = CollisionBounds;
-			DebugOverlay.Text(  Transform.TransformVector(CollisionBounds.Center), Glyph, KeyColour );
+			DebugOverlay.Text(  Transform.TransformVector(CollisionBounds.Center*Scale), Glyph, KeyColour );
+		}
+
+		private void PawnLookingAt()
+		{
+			var ply = Local.Pawn;
+			if ( ply == null )
+				return;
+
+			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * ( 85 * ply.Scale ) )
+				.HitLayer( CollisionLayer.Debris )
+				.Ignore( ply )
+				.Run();
+
+			if ( tr.Hit && tr.Entity == this )
+				Highlighted = true;
+			else
+				Highlighted = false;
 		}
 	}
 }
