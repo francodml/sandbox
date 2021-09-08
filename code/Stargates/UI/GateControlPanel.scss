@@ -157,11 +157,12 @@
 
     .addressinput {
         margin: 10px;
+        flex-shrink: 100;
         padding-bottom: 15px;
         display: flex;
         font-size: 20px;
         flex-direction: row;
-        width: 50%;
+        width: 100%;
         font-family: Stargate Address Glyphs SG1;
         color: #fff;
 

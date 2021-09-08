@@ -49,7 +49,7 @@ namespace winsandbox.Stargates
 				if ( DHD.Active )
 					SubmitDelay();
 				else
-					DHD.Stargate.OpenMenu();
+					DHD.Stargate.OpenMenu(To.Single(actv));
 				return false;
 			}
 			Active = !Active;
