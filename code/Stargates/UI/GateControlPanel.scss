@@ -34,6 +34,12 @@
         color: #fff;
     }
 
+    .address {
+        font-family: Stargate Address Glyphs SG1;
+        font-size: 23px;
+        font-weight: normal;
+    }
+
     titlebar {
         border-top-left-radius: 5px;
         border-top-right-radius: 5px;
@@ -155,7 +161,7 @@
         padding: 5px;
     }
 
-    .addressinput {
+    textentry {
         margin: 10px;
         flex-shrink: 100;
         padding-bottom: 15px;
@@ -163,8 +169,11 @@
         font-size: 20px;
         flex-direction: row;
         width: 100%;
-        font-family: Stargate Address Glyphs SG1;
         color: #fff;
+
+        &.addressinput {
+            font-family: Stargate Address Glyphs SG1;
+        }
 
         .placeholder {
             position: absolute;

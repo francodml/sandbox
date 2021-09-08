@@ -1,0 +1,31 @@
+﻿@import 'Stargates/UI/GateControlPanel.scss';
+
+addressbookentry {
+    background-color: black;
+    cursor: pointer;
+    transition: background-color 0.1s ease-in;
+
+    &:hover {
+        background-color: dodgerblue;
+    }
+
+    &:first-child {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+    }
+
+    &:last-child {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+    }
+
+    .rowcontainer {
+        width: 100%;
+        justify-content: space-between;
+
+        .fullwidth {
+            width: 100%;
+            flex-shrink: 100;
+        }
+    }
+}

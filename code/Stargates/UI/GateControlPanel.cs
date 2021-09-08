@@ -14,11 +14,12 @@ namespace winsandbox.Stargates.UI
 	{
 		public Stargate Gate { get; private set; }
 		private TextEntry ourAddress;
-		private TextEntry remoteAddress;
+		public TextEntry remoteAddress;
 
-		public GateControlPanel()
+		public GateControlPanel( Stargate gate )
 		{
 			StyleSheet.Load( "Stargates/UI/GateControlPanel.scss" );
+			Gate = gate;
 
 			var titlebar = AddChild<Titlebar>();
 			{
@@ -32,7 +33,7 @@ namespace winsandbox.Stargates.UI
 			{
 				var addressContainer = left.AddChild<Panel>( "rowcontainer" );
 				{
-					ourAddress = addressContainer.Add.TextEntry( "" );
+					ourAddress = addressContainer.Add.TextEntry( Gate.Address );
 					ourAddress.AddClass( "addressinput" );
 					ourAddress.Placeholder = "Gate Address";
 					ourAddress.AddEventListener( "onchange", () => ourAddress.Text = CleanupAddress( ourAddress.Text ) );
@@ -46,11 +47,26 @@ namespace winsandbox.Stargates.UI
 						}
 					} );
 				}
+
+				var namecontainer = left.AddChild<Panel>( "rowcontainer" );
+				{
+					var gateName = namecontainer.Add.TextEntry( Gate.Name );
+					gateName.Placeholder = "Name";
+
+					namecontainer.Add.Button( "Set", () =>
+					{
+						Sound.FromScreen( "stargate.ui.confirm" );
+						Stargate.UI_SetGateName( Gate.NetworkIdent, gateName.Text );
+					} );
+				}
 			}
 
 			var middle = content.AddChild<Panel>( "column middle" );
 			{
-				middle.Add.Label( "awxo" );
+				foreach (Stargate g in Entity.All.OfType<Stargate>().Where( x => x != Gate) )
+				{
+					middle.AddChild( new AddressBookEntry( g, this ) );
+				}
 			}
 
 			var right = content.AddChild<Panel>( "column right" );
@@ -68,12 +84,6 @@ namespace winsandbox.Stargates.UI
 
 				right.Add.Button( "Disconnect", "fill", () => Stargate.UI_Disconnect( Gate.NetworkIdent ) );
 			}
-		}
-
-		public void SetGate( Stargate gate )
-		{
-			this.Gate = gate;
-			ourAddress.Text = gate.Address;
 		}
 
 		public string CleanupAddress( string address )
