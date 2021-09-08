@@ -11,7 +11,7 @@ namespace winsandbox.Stargates
 	{
 		public bool DenyDHDInput => !string.IsNullOrEmpty(OtherAddress) && OtherAddress.Length == 8;
 		private int currentChevron = 0;
-		private bool dialling = false;
+		public bool Dialling { get; private set; } = false;
 		private bool locking = false;
 		private bool doingStuff;
 
@@ -49,7 +49,7 @@ namespace winsandbox.Stargates
 			chevron.Animate(true);
 			if (autoconnect)
 				currentChevron = 0;
-			dialling = false;
+			Dialling = false;
 			locking = autoconnect;
 		}
 
@@ -127,7 +127,7 @@ namespace winsandbox.Stargates
 		[Event.Tick.Server]
 		public void Tick()
 		{
-			if ( dialling && !string.IsNullOrEmpty(OtherAddress) )
+			if ( Dialling && !string.IsNullOrEmpty(OtherAddress) )
 			{
 				var desiredSymbol = currentChevron < OtherAddress.Length ? OtherAddress[currentChevron].ToString() : "#";
 				if ( !chevrons[6].Continue )

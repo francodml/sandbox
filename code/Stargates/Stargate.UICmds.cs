@@ -16,7 +16,7 @@ namespace winsandbox.Stargates
 			if ( FindByIndex( GateIdent ) is Stargate g )
 			{
 				g.OtherAddress = address;
-				g.dialling = true;
+				g.Dialling = true;
 			}
 		}
 
@@ -67,6 +67,15 @@ namespace winsandbox.Stargates
 			if ( Entity.FindByIndex(GateIdent) is Stargate g && g.IsValid() )
 			{
 				g.Address = NewAddress;
+			}
+		}
+
+		[ServerCmd]
+		internal static void UI_SetGateName( int GateIdent, string NewName )
+		{
+			if ( Entity.FindByIndex(GateIdent) is Stargate g && g.IsValid() )
+			{
+				g.Name = NewName;
 			}
 		}
 
