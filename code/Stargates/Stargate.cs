@@ -13,9 +13,9 @@ namespace winsandbox.Stargates
 	[Hammer.EditorModel("models/stargates/stargate.vmdl")]
 	public partial class Stargate : AnimEntity, IUse
 	{
-		
-		[Property("Address", Group = "Stargate")]
-		[Net] public string Address { get; private set; }
+		[Net, Property( "Address", Group = "Stargate" )] public string Address { get; private set; }
+
+		[Net, Property("Name", Group = "Stargate")] public string Name { get; private set; }
 
 		[Property( "Point of Origin", Group = "Stargate" )]
 		[Net] public string PointOfOrigin { get; private set; } = "#";
@@ -77,6 +77,7 @@ namespace winsandbox.Stargates
 			}
 
 		}
+
 		public bool IsUsable( Entity user ) => true;
 
 		internal void RotateRingToSymbol( string symbol )
@@ -93,8 +94,8 @@ namespace winsandbox.Stargates
 		[ClientRpc]
 		public void OpenMenu()
 		{
-			var menu = Local.Hud.AddChild<GateControlPanel>();
-			menu.SetGate( this );
+			var menu = new GateControlPanel( this );
+			Local.Hud.AddChild( menu );
 		}
 
 		public Stargate FindGate(string address = null)
@@ -140,6 +141,7 @@ namespace winsandbox.Stargates
 
 		public async void FailConnection()
 		{
+			Busy = true;
 			PlaySound( "stargates.milkyway.fail" );
 			await Task.DelaySeconds( 3.5f );
 			PlaySound( "stargates.milkyway.chevron.close" );
@@ -181,8 +183,9 @@ namespace winsandbox.Stargates
 		{
 			SetChevrons( false );
 			currentChevron = 0;
-			dialling = false;
+			Dialling = false;
 			OtherAddress = "";
+			Busy = false;
 			chevrons[6].ResetBones();
 			ring.Stop();
 			AddressIndexMap = null;
@@ -238,11 +241,21 @@ namespace winsandbox.Stargates
 					ply.Controller = oldController;
 				}
 			}
-			ent.Position = OtherGate.GetAttachment("Centre").GetValueOrDefault().Position + OtherGate.Rotation.Forward * 100;
+
+			var localVelNorm = Transform.NormalToLocal( ent.Velocity.Normal );
+			var otherVelNorm = OtherGate.Transform.NormalToWorld( localVelNorm.WithX( -localVelNorm.x ) );
+
+			var localPos = Transform.PointToLocal( ent.Position );
+			var otherPos = OtherGate.Transform.PointToWorld( localPos.WithY( -localPos.y ).WithX(70) );
+
+			var localRot = Transform.RotationToLocal( ent.Rotation );
+			var otherRot = OtherGate.Transform.RotationToWorld( localRot.RotateAroundAxis( localRot.Up, 180f ) );
+
+			ent.Position = otherPos;
 			ent.ResetInterpolation();
+			ent.Velocity = otherVelNorm * ent.Velocity.Length;
 			OtherGate.PlaySound( "stargates.milkyway.pass" );
 
-			ent.Velocity = OtherGate.Rotation.Forward * ent.Velocity.Length;
 		}
 
 		public enum Connection
