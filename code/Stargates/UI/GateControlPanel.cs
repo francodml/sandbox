@@ -14,6 +14,7 @@ namespace winsandbox.Stargates.UI
 	{
 		public Stargate Gate { get; private set; }
 		private TextEntry ourAddress;
+		private TextEntry remoteAddress;
 
 		public GateControlPanel()
 		{
@@ -29,19 +30,22 @@ namespace winsandbox.Stargates.UI
 
 			var left = content.AddChild<Panel>( "column left" );
 			{
-				ourAddress = left.Add.TextEntry( "" );
-				ourAddress.AddClass( "addressinput" );
-				ourAddress.Placeholder = "Gate Address";
-				ourAddress.AddEventListener( "onchange", () => ourAddress.Text = CleanupAddress( ourAddress.Text ) );
-
-				left.Add.Button( "Set", () =>
+				var addressContainer = left.AddChild<Panel>( "rowcontainer" );
 				{
-					if ( ourAddress.Text.Length == 6 )
+					ourAddress = addressContainer.Add.TextEntry( "" );
+					ourAddress.AddClass( "addressinput" );
+					ourAddress.Placeholder = "Gate Address";
+					ourAddress.AddEventListener( "onchange", () => ourAddress.Text = CleanupAddress( ourAddress.Text ) );
+
+					addressContainer.Add.Button( "Set", () =>
 					{
-						Sound.FromScreen( "stargate.ui.confirm" );
-						Stargate.UI_SetGateAddress( Gate.NetworkIdent, ourAddress.Text.ToUpper() );
-					}
-				} );
+						if ( ourAddress.Text.Length == 6 )
+						{
+							Sound.FromScreen( "stargate.ui.confirm" );
+							Stargate.UI_SetGateAddress( Gate.NetworkIdent, ourAddress.Text.ToUpper() );
+						}
+					} );
+				}
 			}
 
 			var middle = content.AddChild<Panel>( "column middle" );
@@ -51,7 +55,18 @@ namespace winsandbox.Stargates.UI
 
 			var right = content.AddChild<Panel>( "column right" );
 			{
-				right.Add.Label( "awxo" );
+				var addressContainer = right.AddChild<Panel>( "rowcontainer" );
+				{
+					remoteAddress = addressContainer.Add.TextEntry( "" );
+					remoteAddress.AddClass( "addressinput" );
+					remoteAddress.Placeholder = "Remote Address";
+					remoteAddress.AddEventListener( "onchange", () => remoteAddress.Text = CleanupAddress( remoteAddress.Text ) );
+
+					addressContainer.Add.Button( "Slow", "dial slowdial",() => Stargate.UI_Animate( Gate.NetworkIdent, remoteAddress.Text.ToUpper() ) );
+					addressContainer.Add.Button( "Fast", "dial fastdial",() => Stargate.UI_Connect( Gate.NetworkIdent, remoteAddress.Text.ToUpper() ) );
+				}
+
+				right.Add.Button( "Disconnect", "fill", () => Stargate.UI_Disconnect( Gate.NetworkIdent ) );
 			}
 		}
 

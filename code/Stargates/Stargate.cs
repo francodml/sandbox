@@ -110,7 +110,7 @@ namespace winsandbox.Stargates
 				return false;
 			if ( address == null && OtherAddress == null )
 				return false;
-			else if ( OtherAddress != null )
+			else if ( address == null && OtherAddress != null )
 				address = OtherAddress;
 			if ( Busy )
 				return false;

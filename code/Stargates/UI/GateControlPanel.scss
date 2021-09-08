@@ -71,36 +71,15 @@
         flex-wrap: nowrap;
         flex-direction: row;
         justify-content: space-between;
-    }
-
-    .column {
-        background-color: #555;
-        opacity: 0.8;
-        height: 100%;
-        margin: 3px;
-        display: flex;
-        flex-direction: column;
-        align-content: flex-start;
-    }
-
-    .left {
-        justify-content: left;
-        flex-basis: 25%;
-        width: 45%;
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
 
         button {
             text-align: center;
-            align-self: flex-end;
-            top: -25px;
+            //align-self: flex-end;
             border-radius: 50%;
             height: 35px;
             background-color: rgba(#aaa, 0.7);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
 
-            label {
-                text-shadow: 1px 1px 1px rgba(0,0,0,0.004);
-            }
 
             &:hover {
                 background-color: dodgerblue;
@@ -109,7 +88,34 @@
             &:active {
                 background-color: darkcyan;
             }
+
+            &.fill {
+                width: 100%;
+
+                label {
+                    width: 100%;
+                }
+            }
         }
+    }
+
+    .column {
+        background-color: #555;
+        opacity: 0.8;
+        height: 100%;
+        margin: 3px;
+        padding: 5px;
+        display: flex;
+        flex-direction: column;
+        align-content: center;
+    }
+
+    .left {
+        justify-content: left;
+        flex-basis: 25%;
+        width: 45%;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
     }
 
     .middle {
@@ -122,10 +128,36 @@
         width: 45%;
         border-top-right-radius: 5px;
         border-bottom-right-radius: 5px;
+
+        button.dial {
+            &.slowdial {
+                border-top-right-radius: 0px;
+                border-bottom-right-radius: 0px;
+                margin: 0px;
+            }
+
+            &.fastdial {
+                border-top-left-radius: 0px;
+                border-bottom-left-radius: 0px;
+                margin: 0px;
+            }
+
+            label {
+                font-size: 11px;
+            }
+        }
+    }
+
+    .rowcontainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 5px;
     }
 
     .addressinput {
         margin: 10px;
+        padding-bottom: 15px;
         display: flex;
         font-size: 20px;
         flex-direction: row;
