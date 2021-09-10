@@ -6,6 +6,12 @@ using Sandbox.UI;
 
 namespace winsandbox.Stargates
 {
+	public enum ConnectionType
+	{
+		None,
+		Incoming,
+		Outgoing
+	}
 	public static partial class Utils
 	{
 		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*@".ToList();

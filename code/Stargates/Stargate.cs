@@ -20,7 +20,7 @@ namespace winsandbox.Stargates
 		[Property( "Point of Origin", Group = "Stargate" )]
 		[Net] public string PointOfOrigin { get; private set; } = "#";
 		[Net] public bool Busy { get; private set; }
-		[Net] public Connection ConnectionType { get; private set; } = Connection.None;
+		[Net] public ConnectionType Connection { get; private set; } = ConnectionType.None;
 		[Net] public string CurrentRingSymbol => ring.CurrentSymbol;
 		public DHD DHD { get; set; }
 
@@ -129,7 +129,7 @@ namespace winsandbox.Stargates
 
 			eventHorizon.Enable();
 
-			ConnectionType = Connection.Outgoing;
+			Connection = ConnectionType.Outgoing;
 			Busy = true;
 			SetChevrons( true );
 
@@ -150,7 +150,7 @@ namespace winsandbox.Stargates
 
 		public void ConnectIncoming(Stargate other)
 		{
-			ConnectionType = Connection.Incoming;
+			Connection = ConnectionType.Incoming;
 			OtherAddress = other.Address;
 			OtherGate = other;
 			Busy = true;
@@ -166,7 +166,7 @@ namespace winsandbox.Stargates
 			if ( !IsServer | OtherGate == null )
 				return;
 
-			ConnectionType = Connection.None;
+			Connection = ConnectionType.None;
 			OtherAddress = string.Empty;
 			eventHorizon.Disable();
 			Busy = false;
@@ -258,11 +258,11 @@ namespace winsandbox.Stargates
 
 		}
 
-		public enum Connection
+		[Event.Entity.PostSpawn]
+		public static void PostMapSpawn()
 		{
-			None,
-			Incoming,
-			Outgoing
+			foreach ( Stargate dhd in All.OfType<Stargate>() )
+				dhd.PhysicsBody.BodyType = PhysicsBodyType.Keyframed;
 		}
 	}
 }

@@ -45,7 +45,7 @@ namespace winsandbox.Stargates
 			{
 				PlaySound( "stargates.milkyway.pass" );
 
-				if ( gate.ConnectionType == Stargate.Connection.Incoming )
+				if ( gate.Connection == ConnectionType.Incoming )
 				{
 					if (other is SandboxPlayer ply )
 					{

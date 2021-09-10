@@ -60,7 +60,7 @@ namespace winsandbox.Stargates
 			switch ( glyph )
 			{
 				case "SUBMIT":
-					if ( ConnectionType != Connection.None )
+					if ( Connection != ConnectionType.None )
 					{
 						Disconnect();
 						DHD.Reset();
