@@ -8,11 +8,12 @@ using Sandbox;
 namespace winsandbox.Stargates
 {
 	[Library( "ent_dhd", Spawnable = true, Title = "Milky Way DHD" )]
-	[Hammer.EditorModel( "models/dhds/dial_base.vmdl" )]
+	[Hammer.EditorModel( "models/dhds/dhd.vmdl" )]
 	public partial class DHD : ModelEntity
 	{
 		public const string GlyphOrder = "0IHGFEDCBA987654321J@ZYXWVUTSRQP#ONMLK";
 		[Property("Stargate", "The Stargate this DHD is linked to", Group = "Stargate", FGDType = "target_destination")]
+		public string hammer_stargate { get; set; }
 		public Stargate Stargate { get; set; }
 		[Net] public string CurrentAddress { get; set; } = "";
 		public bool Active { get; private set; } = false;
@@ -36,9 +37,16 @@ namespace winsandbox.Stargates
 		{
 			base.Spawn();
 
-			SetModel( "models/dhds/dial_base.vmdl" );
+			if ( !string.IsNullOrEmpty(hammer_stargate) )
+			{
+				Stargate = FindAllByName( hammer_stargate ).OfType<Stargate>().FirstOrDefault();
+			}
+
+
+			SetModel( "models/dhds/dhd.vmdl" );
 			SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
 			PhysicsBody.BodyType = PhysicsBodyType.Static;
+			Transform dialcentre = GetAttachment( "dial_centre" ).GetValueOrDefault();
 
 			for (int j = 0; j < 2; j++ )
 			{
@@ -47,8 +55,8 @@ namespace winsandbox.Stargates
 					var btn = new DHDKey( $"models/dhds/{(j == 0 ? "small" : "large")}_key.vmdl", this )
 					{
 						Scale = Scale,
-						Position = Position,
-						Rotation = this.Rotation * Rotation.FromYaw( (360.0f / 19.0f) * (i - 1) ),
+						Position = dialcentre.Position,
+						Rotation = dialcentre.Rotation * Rotation.FromYaw( (360.0f / 19.0f) * (i - 1) ),
 						Glyph = GlyphOrder[(i-1) + (19 * j)].ToString()
 					};
 					btn.SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
@@ -60,8 +68,8 @@ namespace winsandbox.Stargates
 			SubmitButton = new DHDKey( "models/dhds/submit_key.vmdl", this )
 			{
 				Scale = Scale,
-				Position = Position,
-				Rotation = Rotation,
+				Position = dialcentre.Position,
+				Rotation = dialcentre.Rotation,
 				Glyph = "SUBMIT"
 			};
 			SubmitButton.SetupPhysicsFromModel(PhysicsMotionType.Dynamic);
@@ -171,7 +179,7 @@ namespace winsandbox.Stargates
 			CurrentAddress = Stargate.OtherAddress;
 			RegenerateIndexMap();
 
-			if( Stargate.ConnectionType != Stargate.Connection.None )
+			if( Stargate.Connection != ConnectionType.None )
 			{
 				SetKey( PointOfOrigin, true );
 				SubmitButton.Toggle( true );
@@ -183,6 +191,13 @@ namespace winsandbox.Stargates
 		public void OnFrame()
 		{
 			DebugOverlay.Text( Position , CurrentAddress );
+		}
+
+		[Event.Entity.PostSpawn]
+		public static void PostMapSpawn()
+		{
+			foreach ( DHD dhd in All.OfType<DHD>() )
+				dhd.PhysicsBody.BodyType = PhysicsBodyType.Keyframed;
 		}
 	}
 }

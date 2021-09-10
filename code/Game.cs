@@ -76,7 +76,7 @@ partial class WinSandbox : Game
 		}
 
 		ent.Position = tr.EndPos;
-		ent.Rotation = Rotation.From( new Angles( 0, owner.EyeRot.Angles().yaw+180, 0 ) );
+		ent.Rotation = Rotation.From( new Angles( 0, owner.EyeRot.Angles().yaw + 180, 0 ) );
 
 		//Log.Info( $"ent: {ent}" );
 		UndoSystem.AddUndoEntry( ConsoleSystem.Caller, ent.NetworkIdent );

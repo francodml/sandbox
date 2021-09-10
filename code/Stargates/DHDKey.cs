@@ -40,7 +40,7 @@ namespace winsandbox.Stargates
 		{
 			if ( DHD.Stargate != null && DHD.Stargate.Busy && Glyph != "SUBMIT" )
 				return false;
-			if ( DHD.DenyInput && Glyph != DHD.PointOfOrigin & Glyph != "SUBMIT" )
+			if ( DHD.DenyInput && !Active && Glyph != DHD.PointOfOrigin & Glyph != "SUBMIT" )
 				return false;
 			if ( !Active )
 				PlaySound( $"dhd.milkyway.{(Glyph == "SUBMIT" ? "submit" : "press")}" );
