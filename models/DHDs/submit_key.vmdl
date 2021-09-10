@@ -32,8 +32,8 @@
 						parent_bone = ""
 						surface_prop = "default"
 						collision_prop = "default"
-						radius = 11.272682
-						center = [ 0.0, 0.0, 4.0 ]
+						radius = 6.593917
+						center = [ 0.0, 0.0, -2.0 ]
 					},
 				]
 			},

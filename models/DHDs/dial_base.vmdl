@@ -17,6 +17,10 @@
 								from = "circle.vmat"
 								to = "materials/shiny_white.vmat"
 							},
+							{
+								from = "grid.vmat"
+								to = "materials/shiny_white.vmat"
+							},
 						]
 						use_global_default = false
 						global_default_material = ""
@@ -56,6 +60,22 @@
 						filename = ".blends/DHD/Dial Base.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+					{
+						_class = "RenderMeshFile"
+						filename = ".blends/DHD/DHD Plinth.fbx"
+						import_translation = [ 38.0, 0.0, -60.0 ]
+						import_rotation = [ -30.0, 0.0, 0.0 ]
 						import_scale = 1.0
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
