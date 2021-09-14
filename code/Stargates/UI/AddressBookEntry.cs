@@ -25,9 +25,9 @@ namespace winsandbox.Stargates.UI
 
 			var container = AddChild<Panel>( "rowcontainer" );
 			{
-				container.Add.Label( Address, "address" );
+				container.Add.Label( Address, "address fullwidth" );
 				container.Add.Label( Name, "fullwidth" );
-				container.Add.Label( "Local" );
+				container.Add.Label( "Local", "fullwidth" );
 			}
 
 		}

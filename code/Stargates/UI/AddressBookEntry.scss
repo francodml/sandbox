@@ -20,12 +20,17 @@ addressbookentry {
     }
 
     .rowcontainer {
+        flex-wrap: nowrap;
         width: 100%;
         justify-content: space-between;
 
         .fullwidth {
+            text-align: center;
             width: 100%;
-            flex-shrink: 100;
+
+            &:last-child {
+                width: 50%;
+            }
         }
     }
 }
