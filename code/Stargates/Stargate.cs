@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,19 +14,19 @@ namespace winsandbox.Stargates
 	[Hammer.EditorModel("models/stargates/stargate.vmdl")]
 	public partial class Stargate : AnimEntity, IUse
 	{
-		[Net, Property( "Address", Group = "Stargate" )] public string Address { get; private set; }
+		[Net, Property( "Address" ), Category( "Stargate" )] public string Address { get; private set; }
 
-		[Net, Property("Name", Group = "Stargate")] public string Name { get; private set; }
+		[Net, Property( "Name" ), Category( "Stargate" )] public string Name { get; private set; }
 
-		[Property( "Point of Origin", Group = "Stargate" )]
+		[Property( "Point of Origin" ), Category( "Stargate" )]
 		[Net] public string PointOfOrigin { get; private set; } = "#";
-		[Net] public bool Busy { get; private set; }
-		[Net] public ConnectionType Connection { get; private set; } = ConnectionType.None;
-		[Net] public string CurrentRingSymbol => ring.CurrentSymbol;
+		[Net, Category( "Stargate" ), Reset( false )] public bool Busy { get; private set; }
+		[Net, Category( "Stargate" ), Reset( ConnectionType.None )] public ConnectionType Connection { get; private set; } = ConnectionType.None;
+		[Net, Category( "Stargate" )] public string CurrentRingSymbol => ring.CurrentSymbol;
 		public DHD DHD { get; set; }
 
-		[Net] public string OtherAddress { get; set; } = "";
-		private Stargate OtherGate;
+		[Net, Reset( "" )] public string OtherAddress { get; set; } = "";
+		[Net, Reset( null )] private Stargate OtherGate { get; set; }
 
 		private EventHorizon eventHorizon;
 		[Net] private Ring ring { get; set; }
@@ -181,11 +182,8 @@ namespace winsandbox.Stargates
 
 		public void Reset()
 		{
+			ResetAttribute.ResetAll( this );
 			SetChevrons( false );
-			currentChevron = 0;
-			Dialling = false;
-			OtherAddress = "";
-			Busy = false;
 			chevrons[6].ResetBones();
 			ring.Stop();
 			AddressIndexMap = null;
