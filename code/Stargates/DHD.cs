@@ -61,6 +61,7 @@ namespace winsandbox.Stargates
 					};
 					btn.SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
 					PhysicsBody.BodyType = PhysicsBodyType.Static;
+					btn.SetBodyGroup( "glyph", i - 1 );
 					Keys.Add( btn );
 				}
 			}

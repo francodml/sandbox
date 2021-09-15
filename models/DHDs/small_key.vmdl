@@ -10,16 +10,35 @@
 				children = 
 				[
 					{
+						_class = "MaterialGroup"
+						name = "lit"
+						remaps = 
+						[
+							{
+								from = "materials/dev/dev_measuregeneric01b.vmat"
+								to = "materials/dev/dev_measuregeneric01.vmat"
+							},
+						]
+					},
+					{
 						_class = "DefaultMaterialGroup"
 						remaps = 
 						[
 							{
 								from = "plane.vmat"
-								to = "materials/shiny_white.vmat"
+								to = "materials/generic/wall_panel_d_metal_galvanized.vmat"
+							},
+							{
+								from = "inner_ring_glyph_sides.vmat"
+								to = "materials/generic/wall_panel_d_metal_galvanized.vmat"
+							},
+							{
+								from = "inner_ring_glyph_face.vmat"
+								to = "materials/dev/dev_measuregeneric01b.vmat"
 							},
 						]
 						use_global_default = false
-						global_default_material = ""
+						global_default_material = "materials/shiny_white.vmat"
 					},
 				]
 			},
@@ -44,6 +63,7 @@
 				[
 					{
 						_class = "RenderMeshFile"
+						name = "key"
 						filename = ".blends/DHD/Small Key.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
@@ -57,6 +77,16 @@
 							exclude_by_default = false
 							exception_list = [  ]
 						}
+					},
+				]
+			},
+			{
+				_class = "PrefabList"
+				children = 
+				[
+					{
+						_class = "Prefab"
+						target_file = "models/DHDs/dhd_glyphs_small.vmdl_prefab"
 					},
 				]
 			},

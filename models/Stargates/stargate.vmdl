@@ -15,7 +15,7 @@
 						[
 							{
 								from = "stargate_sg1.vmat"
-								to = "models/sbox_props/street_lamp/street_lamp_metal_pole.vmat"
+								to = "materials/generic/wall_panel_d_metal_galvanized.vmat"
 							},
 							{
 								from = "chevron.vmat"

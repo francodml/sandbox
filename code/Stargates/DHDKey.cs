@@ -52,8 +52,7 @@ namespace winsandbox.Stargates
 					DHD.Stargate.OpenMenu(To.Single(actv));
 				return false;
 			}
-			Active = !Active;
-			RenderColor = KeyColour;
+			Toggle( !Active );
 			DHD.KeyPress( Glyph, Active );
 			return false;
 		}
@@ -62,6 +61,7 @@ namespace winsandbox.Stargates
 		{
 			Active = state;
 			RenderColor = KeyColour;
+			SetMaterialGroup( Active ? 1 : 0 );
 		}
 
 		[Event.Frame]
