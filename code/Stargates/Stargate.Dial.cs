@@ -20,16 +20,13 @@ namespace winsandbox.Stargates
 		private bool doingStuff;
 
 		private Dictionary<string, int> AddressIndexMap;
-		[Reset( false) ] private bool shouldLockOnStop { get; set; }
+		[Reset( false )] private bool shouldLockOnStop { get; set; }
 		[Reset( false )] private bool shouldConnectOnStop { get; set; }
-		[Reset( false )] private bool shouldTryConnect { get; set; }
 
 		public void EncodeChevron()
 		{
 			if ( !IsServer )
 				return;
-			if ( DHD != null )
-				DHD.SetKey( CurrentRingSymbol, true );
 			if ( (currentChevron == 9 || currentChevron == 6) && !chevrons[6].Engaged)
 			{
 				LockChevron(true);
@@ -143,6 +140,8 @@ namespace winsandbox.Stargates
 			doingStuff = true;
 			await Task.DelaySeconds( 0.6f );
 			EncodeChevron();
+			if ( DHD != null )
+				DHD.SetKey( CurrentRingSymbol, true );
 			doingStuff = false;
 		}
 
@@ -150,8 +149,31 @@ namespace winsandbox.Stargates
 		{
 			shouldLockOnStop = false;
 			await Task.DelaySeconds( 0.6f );
-			LockChevron();
-			shouldTryConnect = true;
+			LockChevron(shouldConnectOnStop);
+		}
+
+		public async void FastDial( string address )
+		{
+			OtherAddress = address;
+			ring.RotateToSymbol(PointOfOrigin);
+			shouldLockOnStop = true;
+			shouldConnectOnStop = true;
+			await Task.DelaySeconds( 0.5f );
+			int j = 0;
+			for (int i = 0; i < OtherAddress.Length; i++ )
+			{
+				chevrons[j].Toggle( true );
+				if ( DHD != null )
+					DHD.SetKey( OtherAddress[i].ToString(), true );
+				PlaySound( "dhd.milkyway.press" ).SetVolume( 7.0f );
+				await Task.DelaySeconds( 0.5f + Rand.Float( 0.5f ) );
+				j++;
+				if ( j == 6 )
+					j++;
+			}
+			PlaySound( "dhd.milkyway.press" ).SetVolume( 7.0f );
+			if ( DHD != null )
+				DHD.SetKey( PointOfOrigin, true );
 		}
 
 		[Event.Tick.Server]
@@ -182,13 +204,6 @@ namespace winsandbox.Stargates
 			if ( !ring.Rotating && shouldLockOnStop )
 			{
 				LockDelay();
-			}
-
-			if ( shouldConnectOnStop && shouldTryConnect && chevrons[6].Continue )
-			{
-				shouldConnectOnStop = false;
-				shouldTryConnect = false;
-				Connect();
 			}
 		}
 
