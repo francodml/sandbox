@@ -20,8 +20,8 @@ namespace winsandbox.Stargates
 		private bool doingStuff;
 
 		private Dictionary<string, int> AddressIndexMap;
-		[Reset( false )] private bool shouldLockOnStop { get; set; }
-		[Reset( false )] private bool shouldConnectOnStop { get; set; }
+		[Reset( false )] public bool shouldLockOnStop { get; private set; }
+		[Reset( false )] public bool shouldConnectOnStop { get; private set; }
 
 		public void EncodeChevron()
 		{
