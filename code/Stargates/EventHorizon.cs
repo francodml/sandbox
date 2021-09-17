@@ -11,8 +11,15 @@ namespace winsandbox.Stargates
 	[Library("ent_stargate_eh", Spawnable = false)]
 	partial class EventHorizon : ModelEntity
 	{
+		private TaskCompletionSource tsc;
+
 		[Net]
 		public bool Enabled { get; private set; }
+		[Net] public TimeSince openTime { get; private set; } = 0;
+		[Net]public bool Peaked { get; private set; }
+
+		Timeline UVortexTimeline;
+
 		public override void Spawn()
 		{
 			base.Spawn();
@@ -26,6 +33,19 @@ namespace winsandbox.Stargates
 			Enabled = false;
 			EnableDrawing = false;
 			EnableTouch = true;
+		}
+
+		public EventHorizon()
+		{
+			UVortexTimeline = new Timeline
+			{
+				Keyframes = new()
+				{
+					new Keyframe( 2.0f, 300, EasingFunction.Linear ),
+					new Keyframe( 5.0f, 0, EasingFunction.Linear ),
+					new Keyframe( 10.0f, 300, EasingFunction.Linear ),
+				}
+			};
 		}
 
 		public override void StartTouch( Entity other )
@@ -63,12 +83,38 @@ namespace winsandbox.Stargates
 			Enabled = true;
 			EnableDrawing = true;
 			PlaySound( "stargates.milkyway.open" );
+			Vortex();
 		}
 		public void Disable()
 		{
 			Enabled = false;
 			EnableDrawing = false;
 			PlaySound( "stargates.milkyway.close" );
+		}
+
+		private async void Vortex()
+		{
+			Peaked = false;
+			await Task.DelaySeconds( 1.0f );
+			openTime = 0;
+			SetBodyGroup( "UVortexB", 1 );
+			await Task.DelaySeconds( 1.4f );
+			Peaked = true;
+			await Task.DelaySeconds( 1.4f );
+			SetBodyGroup( "UVortexB", 0 );
+		}
+
+		[Event.Frame]
+		public void OnFrame()
+		{
+			SceneObject.SetValue( "Time", openTime );
+
+			SceneObject.SetValue( "WorldPos", Position );
+
+			SceneObject.SetValue( "Peaked", Peaked );
+
+			DebugOverlay.ScreenText( 0, openTime.Relative.ToString() );
+			DebugOverlay.ScreenText( 1, UVortexTimeline.GetValue(openTime).ToString() );
 		}
 	}
 }
