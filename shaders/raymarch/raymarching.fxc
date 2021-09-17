@@ -1,0 +1,39 @@
+
+
+#define STEPS 128
+#define STEP_SIZE 0.01
+#define MIN_DISTANCE 0.01
+
+float Lambert( float3 n, float3 l )
+{
+    return dot( n, l );
+}
+#define EPS 0.0001
+float3 GetNormal( float3 p )
+{
+    float d = Map( p ).sdf;
+    float2 e = float2( EPS, 0 );
+    float3 n = d - float3(
+        Map( p - e.xyy ).sdf,  
+        Map( p - e.yxy ).sdf,
+        Map( p - e.yyx ).sdf
+    );
+    return normalize( n );
+}
+
+float4 RayMarch( float3 ro, float3 rd ) 
+{
+    for ( int i = 0; i < STEPS; i++ ) 
+    {
+		MAP_OUT m = Map(ro);
+        float3 col = m.color;
+        float d = m.sdf;
+        if ( d < MIN_DISTANCE ) 
+        {
+            float p = i / (float)STEPS;
+            return float4( p.xxx, 1 );
+        }
+        ro += rd * STEP_SIZE;
+    }
+    return float4( 0, 0, 0, 0 );
+}

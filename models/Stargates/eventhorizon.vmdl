@@ -17,6 +17,10 @@
 								from = "eventhorizon.vmat"
 								to = "materials/default/white.vmat"
 							},
+							{
+								from = "unstablevortex.vmat"
+								to = "materials/stargates/unstablevortex.vmat"
+							},
 						]
 						use_global_default = false
 						global_default_material = ""
@@ -28,12 +32,28 @@
 				children = 
 				[
 					{
-						_class = "PhysicsHullFromRender"
+						_class = "PhysicsHullFile"
+						name = "EventHorizon"
 						parent_bone = ""
 						surface_prop = "default"
 						collision_prop = "default"
-						faceMergeAngle = 20.0
-						maxHullVertices = 0
+						recenter_on_parent_bone = false
+						offset_origin = [ 0.0, 0.0, 0.0 ]
+						offset_angles = [ 0.0, 0.0, 0.0 ]
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						filename = "models/Stargates/EventHorizon.fbx"
+						import_scale = 1.0
+						faceMergeAngle = 5.0
+						maxHullVertices = 4
+						import_mode = "SingleHull"
+						optimization_algorithm = "QEM"
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
 					},
 				]
 			},
@@ -46,7 +66,7 @@
 						filename = "models/stargates/eventhorizon.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
-						import_scale = 0.7
+						import_scale = 1.0
 						align_origin_x_type = "None"
 						align_origin_y_type = "None"
 						align_origin_z_type = "None"
@@ -56,6 +76,48 @@
 							exclude_by_default = false
 							exception_list = [  ]
 						}
+					},
+					{
+						_class = "RenderMeshFile"
+						name = "UVortexBounds"
+						filename = "models/Stargates/UnstableVortexBounds.fbx"
+						import_translation = [ 0.0, 0.0, 0.0 ]
+						import_rotation = [ 0.0, 0.0, 0.0 ]
+						import_scale = 1.0
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
+						parent_bone = ""
+						import_filter = 
+						{
+							exclude_by_default = false
+							exception_list = [  ]
+						}
+					},
+				]
+			},
+			{
+				_class = "BodyGroupList"
+				children = 
+				[
+					{
+						_class = "BodyGroup"
+						name = "UVortexB"
+						children = 
+						[
+							{
+								_class = "BodyGroupChoice"
+								meshes = [  ]
+							},
+						]
+						hidden_in_tools = false
+					},
+					{
+						_class = "BodyGroupChoice"
+						meshes = 
+						[
+							"UVortexBounds",
+						]
 					},
 				]
 			},

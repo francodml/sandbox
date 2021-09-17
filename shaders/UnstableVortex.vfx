@@ -1,0 +1,168 @@
+HEADER
+{
+    DevShader = true;
+    CompileTargets = ( IS_SM_50 && ( PC || VULKAN ) );
+    Description = "Basic raymarching";
+    Version = 1;
+}
+
+MODES
+{
+    VrForward();
+}
+
+FEATURES
+{
+}
+
+COMMON
+{
+    // Required by re_system & re_vr_shared_standard_vs_code
+    #include "includes/re_Globals.fxc"
+    #include "includes/re_PerViewConstantBuffer.fxc"
+    #include "includes/re_PerViewConstantBufferVR.fxc"
+    #include "includes/re_SunLightShaderParamsCB.fxc"
+    #include "includes/re_system.fxc"
+
+    struct PS_INPUT
+    {
+        #include "includes/re_vr_shared_standard_ps_input.fxc"
+    };
+
+    struct VS_INPUT
+    {
+        #include "includes/re_vr_shared_standard_vs_input.fxc"
+    };
+}
+
+VS
+{
+    #include "includes/re_vr_shared_standard_vs_code.fxc"
+
+    PS_INPUT MainVs(VS_INPUT i)
+    {
+        PS_INPUT o = VS_SharedStandardProcessing( i );
+        return VS_CommonProcessing_Post(o);
+    }
+}
+
+PS
+{
+
+	float3 Origin< UiGroup("Unstable Vortex"); UiType(VectorText); Default3(0.0f, 0.0f, 0.0f); >;
+    Float3Attribute( Origin, true );
+
+	float3 Rotation< UiGroup("Unstable Vortex"); UiType(VectorText); Default3(0.0f, 0.0f, 0.0f); >;
+    Float3Attribute( Rotation, true );
+
+	float Time< UiGroup("Unstable Vortex"); UiType(Slider); Default(0.0f); >;
+    FloatAttribute( Time, true );
+
+	bool Peaked< UiGroup("Unstable Vortex"); UiType(CheckBox); Default(0.0f); >;
+	BoolAttribute( Peaked, true );
+    
+    RenderState( DepthEnable, true );
+    RenderState( DepthWriteEnable, true );
+
+	RenderState( CullMode, NONE );
+
+    CreateTexture2DInRegister(g_tSceneDepth, 2)< AsSceneDepth(true); >;
+
+    // Create our output
+    struct PS_OUTPUT
+    {
+        float4 vColor0 : SV_Target0; // Our output color
+    };
+	#include "raymarch/sdfs.fxc"
+	#include "raymarch/operations.fxc"
+
+	#define GATE_RADIUS 160.8f
+
+	float easeExponential(float t)
+	{
+		if (t == 1)
+			return 1;
+		return 1 - pow( 2, -10 * t );
+	}
+
+	float ease_out_quint(float x) {
+		float t = x; float b = 0; float c = 1; float d = 1;
+		return c*((t=t/d-1)*t*t*t*t + 1) + b;
+	}
+
+	float ease_in_out_expo(float x) {
+		float t = x; float b = 0; float c = 1; float d = 1;
+		if (t==0) return b;
+		if (t==d) return b+c;
+		if ((t/=d/2) < 1) return c/2 * pow(2, 10 * (t - 1)) + b;
+		return c/2 * (-pow(2, -10 * --t) + 2) + b;
+	}
+
+	float ease_in_out_quint(float x) {
+		float t = x; float b = 0; float c = 1; float d = 1;
+		if ((t/=d/2) < 1) return c/2*t*t*t*t*t + b;
+		return c/2*((t-=2)*t*t*t*t + 2) + b;
+	}
+
+	float ease_out_expo(float x) {
+		float t = x; float b = 0; float c = 1; float d = 1;
+		return (t==d) ? b+c : c * (-pow(2, -10 * t/d) + 1) + b;
+	}
+	float ease_in_expo(float x) {
+		float t = x; float b = 0; float c = 1; float d = 1;
+		return (t==0) ? b : c * pow(2, 10 * (t/d - 1)) + b;
+	}
+	static bool peaked;
+
+	struct MAP_OUT {
+		float sdf;
+		float3 color;
+	};
+
+	MAP_OUT Map(float3 ro)
+	{
+		MAP_OUT o;
+		float sinT, cosT;
+		sincos(Time, sinT, cosT);
+		float t;
+
+		float anim;
+		if (!Peaked)
+			t = abs(sinT);
+		else
+			t = abs(cosT);
+
+		anim = lerp(-100,350,ease_out_expo(t));
+
+		//keyframe this shit bb ily
+
+		//pseudo-event horizon
+		float mbox = sdBox( ro, float3(5,GATE_RADIUS.xx) );
+		float mboxclip = Sphere(ro, GATE_RADIUS);
+		float eh = opSmoothIntersection(mbox,mboxclip,10);
+		//pseudo-event horizon end
+
+		float capsule = sdCapsule( ro, float3(-GATE_RADIUS*2,0,0), float3(anim,0,0), lerp(GATE_RADIUS-20, 80, ease_in_out_quint(t)));
+		float sphere = Sphere( ro - float3(anim,0,0), 100);
+		float b = opSmoothUnion(capsule, sphere, 50);
+		o.sdf = opSmoothUnion(eh,b,100);
+		return o;
+	}
+
+	#include "raymarch/raymarching.fxc"
+
+    PS_OUTPUT MainPs( PS_INPUT i )
+    {
+        PS_OUTPUT o;
+		float3 worldPosition = i.vPositionWs;
+        float3 viewDirection = ( i.vPositionWs - g_vCameraPositionWs );
+
+        o.vColor0 = RayMarch( worldPosition - (Origin), viewDirection );
+		
+
+        if ( o.vColor0.a == 0 )
+            discard;
+
+        return o;
+    }
+}

@@ -57,7 +57,7 @@ namespace winsandbox.Stargates
 
 			var centre = GetAttachment( "Centre" ).GetValueOrDefault();
 			eventHorizon = new();
-			eventHorizon.Position = Position;
+			eventHorizon.Position = centre.Position;
 			eventHorizon.Rotation = Rotation;
 			eventHorizon.SetParent( this );
 

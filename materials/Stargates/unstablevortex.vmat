@@ -1,0 +1,20 @@
+// THIS FILE IS AUTO-GENERATED
+
+Layer0
+{
+	shader "unstablevortex.vfx"
+
+	//---- Unstable Vortex ----
+	Origin "[0.000 0.000 0.000]"
+	Peaked "0"
+	Rotation "[0.000 0.000 0.000]"
+	Time "0.000"
+
+	DynamicParams
+	{
+		Origin "return WorldPos"
+		Peaked "return Peaked"
+		Rotation "return Rotation"
+		Time "return Time"
+	}
+}
