@@ -16,7 +16,8 @@ namespace winsandbox.Stargates
 		[Net] public TimeSince openTime { get; private set; } = 0;
 		[Net]public bool Peaked { get; private set; }
 
-		Timeline UVortexTimeline;
+		Timeline CapsuleEndPoint;
+		Timeline CapsuleWidth;
 
 		public override void Spawn()
 		{
@@ -35,11 +36,13 @@ namespace winsandbox.Stargates
 
 		public EventHorizon()
 		{
-			UVortexTimeline = new Timeline()
-				.WithKeyframe( 2.0f, 300 )
-				.WithKeyframe( 5.0f, 0, EasingFunction.Sine )
-				.WithKeyframe( 10.0f, 300, EasingFunction.Sine )
-				.WithKeyframe( 7.0f, 0 );
+			CapsuleEndPoint = new Timeline()
+				.WithKeyframe( 0.03f, -160 )
+				.WithKeyframe( 1.4f, 300, EasingFunction.ExpoOut )
+				.WithKeyframe( 2.8f, -200, EasingFunction.Quint );
+			CapsuleWidth = new Timeline()
+				.WithKeyframe( 0.1f, 160.8f )
+				.WithKeyframe( 2.0f, 85, EasingFunction.ExpoOut );
 		}
 
 		public override void StartTouch( Entity other )
@@ -105,7 +108,8 @@ namespace winsandbox.Stargates
 
 			SceneObject.SetValue( "WorldPos", Position );
 
-			SceneObject.SetValue( "Peaked", Peaked );
+			SceneObject.SetValue( "CapsuleEndPoint", new Vector3(CapsuleEndPoint.GetValue(openTime),0,0)*Rotation );
+			SceneObject.SetValue( "CapsuleWidth",  CapsuleWidth.GetValue(openTime));
 		}
 	}
 }

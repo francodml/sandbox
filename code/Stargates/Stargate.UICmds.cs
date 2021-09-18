@@ -39,8 +39,8 @@ namespace winsandbox.Stargates
 		{
 			if ( Entity.FindByIndex( GateIdent ) is Stargate g && g.IsValid() )
 			{
-				//g.Connect( address );
-				g.FastDial( address );
+				g.Connect( address );
+				//g.FastDial( address );
 			}
 		}
 

@@ -5,15 +5,17 @@ Layer0
 	shader "unstablevortex.vfx"
 
 	//---- Unstable Vortex ----
+	CapsuleEndPoint "[0.000 0.000 0.000]"
+	CapsuleWidth "0.000"
 	Origin "[0.000 0.000 0.000]"
-	Peaked "0"
 	Rotation "[0.000 0.000 0.000]"
 	Time "0.000"
 
 	DynamicParams
 	{
+		CapsuleEndPoint "return CapsuleEndPoint"
+		CapsuleWidth "return CapsuleWidth"
 		Origin "return WorldPos"
-		Peaked "return Peaked"
 		Rotation "return Rotation"
 		Time "return Time"
 	}

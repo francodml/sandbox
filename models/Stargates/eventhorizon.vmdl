@@ -107,17 +107,20 @@
 						[
 							{
 								_class = "BodyGroupChoice"
-								meshes = [  ]
+								meshes = 
+								[
+									"unnamed_1",
+								]
+							},
+							{
+								_class = "BodyGroupChoice"
+								meshes = 
+								[
+									"UVortexBounds",
+								]
 							},
 						]
 						hidden_in_tools = false
-					},
-					{
-						_class = "BodyGroupChoice"
-						meshes = 
-						[
-							"UVortexBounds",
-						]
 					},
 				]
 			},

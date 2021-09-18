@@ -16,3 +16,11 @@ tools_thumbnail_cache.bin
 maps/editor/_bakeresourcecache/toolscene_default_baked/*
 sounds/stargates/milkyway/WinSounds.zip
 /shaders/includes
+/shaders/raymarcher.vfx
+/shaders/vfx/example_shader_pc_50_vs.vcs
+/shaders/vfx/example_shader_pc_50_ps.vcs
+/shaders/vfx/example_shader_pc_50_features.vcs
+/shaders/vfx/raymarcher_pc_50_vs.vcs
+/shaders/vfx/raymarcher_pc_50_ps.vcs
+/shaders/vfx/raymarcher_pc_50_features.vcs
+/shaders/vfx/raymarcher.ini

@@ -26,11 +26,17 @@ namespace winsandbox.Stargates
 	enum EasingFunction
 	{
 		Linear,
-		Exponential,
-		Quadratic,
+		ExpoOut,
+		ExpoIn,
+		Expo,
+		QuadIn,
+		QuadOut,
+		Quad,
+		CubicIn,
+		CubicOut,
 		Cubic,
 		Quartic,
-		Quintic,
+		Quint,
 		Circular,
 		Sine,
 		Hold
@@ -82,16 +88,20 @@ namespace winsandbox.Stargates
 			return MathX.LerpTo( Current, Next, Ease(GetTimeInterval( time ), Next.Easing) );
 		}
 
-		private float Ease( float v, EasingFunction easing )
+		private float Ease( float x, EasingFunction easing )
 		{
 			switch ( easing )
 			{
 				case EasingFunction.Linear:
-					return v;
-				case EasingFunction.Exponential:
-					return Easing.EaseInOut(v);
+					return x;
+				case EasingFunction.ExpoOut:
+					return x == 1 ? 1 : 1 - MathF.Pow( 2, -10 * x );
+				case EasingFunction.Quint:
+					return x < 0.5
+					  ? (1 - MathF.Sqrt( 1 - MathF.Pow( 2 * x, 2 ) )) / 2
+					  : (MathF.Sqrt( 1 - MathF.Pow( -2 * x + 2, 2 ) ) + 1) / 2;
 				default:
-					return v;
+					return x;
 			}
 		}
 
