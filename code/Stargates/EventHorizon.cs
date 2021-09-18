@@ -11,8 +11,6 @@ namespace winsandbox.Stargates
 	[Library("ent_stargate_eh", Spawnable = false)]
 	partial class EventHorizon : ModelEntity
 	{
-		private TaskCompletionSource tsc;
-
 		[Net]
 		public bool Enabled { get; private set; }
 		[Net] public TimeSince openTime { get; private set; } = 0;
@@ -37,15 +35,11 @@ namespace winsandbox.Stargates
 
 		public EventHorizon()
 		{
-			UVortexTimeline = new Timeline
-			{
-				Keyframes = new()
-				{
-					new Keyframe( 2.0f, 300, EasingFunction.Linear ),
-					new Keyframe( 5.0f, 0, EasingFunction.Linear ),
-					new Keyframe( 10.0f, 300, EasingFunction.Linear ),
-				}
-			};
+			UVortexTimeline = new Timeline()
+				.WithKeyframe( 2.0f, 300 )
+				.WithKeyframe( 5.0f, 0, EasingFunction.Sine )
+				.WithKeyframe( 10.0f, 300, EasingFunction.Sine )
+				.WithKeyframe( 7.0f, 0 );
 		}
 
 		public override void StartTouch( Entity other )
@@ -112,9 +106,6 @@ namespace winsandbox.Stargates
 			SceneObject.SetValue( "WorldPos", Position );
 
 			SceneObject.SetValue( "Peaked", Peaked );
-
-			DebugOverlay.ScreenText( 0, openTime.Relative.ToString() );
-			DebugOverlay.ScreenText( 1, UVortexTimeline.GetValue(openTime).ToString() );
 		}
 	}
 }

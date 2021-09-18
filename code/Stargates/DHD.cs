@@ -114,7 +114,7 @@ namespace winsandbox.Stargates
 		{
 			if ( Stargate.DHD != this )
 				Stargate.DHD = this;
-			if ( Stargate != null )
+			if ( Stargate != null && Stargate.IsValid )
 			{
 				Stargate.DHDKeypress( glyph, active );
 			}
