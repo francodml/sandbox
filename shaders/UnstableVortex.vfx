@@ -106,6 +106,7 @@ PS
 	}
 
 	#include "raymarch/raymarching.fxc"
+	//#include "raymarch/lighting.fxc"
 
     PS_OUTPUT MainPs( PS_INPUT i )
     {
@@ -114,7 +115,6 @@ PS
         float3 viewDirection = ( i.vPositionWs - g_vCameraPositionWs );
 
         o.vColor0 = RayMarch( worldPosition - (Origin), viewDirection );
-		
 
         if ( o.vColor0.a == 0 )
             discard;

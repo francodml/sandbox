@@ -14,7 +14,6 @@ namespace winsandbox.Stargates
 		[Net]
 		public bool Enabled { get; private set; }
 		[Net] public TimeSince openTime { get; private set; } = 0;
-		[Net]public bool Peaked { get; private set; }
 
 		Timeline CapsuleEndPoint;
 		Timeline CapsuleWidth;
@@ -38,11 +37,12 @@ namespace winsandbox.Stargates
 		{
 			CapsuleEndPoint = new Timeline()
 				.WithKeyframe( 0.03f, -160 )
-				.WithKeyframe( 1.4f, 300, EasingFunction.ExpoOut )
-				.WithKeyframe( 2.8f, -200, EasingFunction.Quint );
+				.WithKeyframe( 0.8f, 350, EasingFunction.ExpoOut )
+				.WithKeyframe( 3.0f, -200, EasingFunction.Quint );
 			CapsuleWidth = new Timeline()
-				.WithKeyframe( 0.1f, 160.8f )
-				.WithKeyframe( 2.0f, 85, EasingFunction.ExpoOut );
+				.WithKeyframe( 0.03f, 120 )
+				.WithKeyframe( 0.3f, 100 )
+				.WithKeyframe( 2.0f, 75, EasingFunction.ExpoOut );
 		}
 
 		public override void StartTouch( Entity other )
@@ -91,13 +91,10 @@ namespace winsandbox.Stargates
 
 		private async void Vortex()
 		{
-			Peaked = false;
 			await Task.DelaySeconds( 1.0f );
 			openTime = 0;
 			SetBodyGroup( "UVortexB", 1 );
-			await Task.DelaySeconds( 1.4f );
-			Peaked = true;
-			await Task.DelaySeconds( 1.4f );
+			await Task.DelaySeconds( 2.8f );
 			SetBodyGroup( "UVortexB", 0 );
 		}
 
@@ -108,7 +105,9 @@ namespace winsandbox.Stargates
 
 			SceneObject.SetValue( "WorldPos", Position );
 
-			SceneObject.SetValue( "CapsuleEndPoint", new Vector3(CapsuleEndPoint.GetValue(openTime),0,0)*Rotation );
+			var ass = Matrix.CreateRotation( Rotation );
+
+			SceneObject.SetValue( "CapsuleEndPoint", ass.Transform(new Vector3(CapsuleEndPoint.GetValue(openTime),0,0)) );
 			SceneObject.SetValue( "CapsuleWidth",  CapsuleWidth.GetValue(openTime));
 		}
 	}

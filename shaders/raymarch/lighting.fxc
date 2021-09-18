@@ -1,0 +1,59 @@
+float3 phongContribForLight(float3 k_d, float3 k_s, float alpha, float3 p, float3 eye,
+                          float3 lightPos, float3 lightIntensity) {
+    float3 N = GetNormal(p);
+    float3 L = normalize(lightPos - p);
+    float3 V = normalize(eye - p);
+    float3 R = normalize(reflect(-L, N));
+    
+    float dotLN = dot(L, N);
+    float dotRV = dot(R, V);
+    
+    if (dotLN < 0.0) {
+        // Light not visible from this point on the surface
+        return float3(0.0, 0.0, 0.0);
+    } 
+    
+    if (dotRV < 0.0) {
+        // Light reflection in opposite direction as viewer, apply only diffuse
+        // component
+        return lightIntensity * (k_d * dotLN);
+    }
+    return lightIntensity * (k_d * dotLN + k_s * pow(dotRV, alpha));
+}
+
+/**
+ * Lighting via Phong illumination.
+ * 
+ * The float3 returned is the RGB color of that point after lighting is applied.
+ * k_a: Ambient color
+ * k_d: Diffuse color
+ * k_s: Specular color
+ * alpha: Shininess coefficient
+ * p: position of point being lit
+ * eye: the position of the camera
+ *
+ * See https://en.wikipedia.org/wiki/Phong_reflection_model#Description
+ */
+float3 phongIllumination(float3 k_a, float3 k_d, float3 k_s, float alpha, float3 p, float3 eye) {
+    const float3 ambientLight = 0.5 * float3(1.0, 1.0, 1.0);
+    float3 color = ambientLight * k_a;
+    
+    float3 light1Pos = float3(4.0 * sin(iTime),
+                          2.0,
+                          4.0 * cos(iTime));
+    float3 light1Intensity = float3(0.4, 0.4, 0.4);
+    
+    color += phongContribForLight(k_d, k_s, alpha, p, eye,
+                                  light1Pos,
+                                  light1Intensity);
+    
+    float3 light2Pos = float3(2.0 * sin(0.37 * iTime),
+                          2.0 * cos(0.37 * iTime),
+                          2.0);
+    float3 light2Intensity = float3(0.4, 0.4, 0.4);
+    
+    color += phongContribForLight(k_d, k_s, alpha, p, eye,
+                                  light2Pos,
+                                  light2Intensity);    
+    return color;
+}
