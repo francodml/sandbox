@@ -60,6 +60,12 @@ namespace winsandbox.Stargates
 			NextKeyFrame++;
 		}
 
+		void Reset()
+		{
+			CurrentKeyframe = 0;
+			NextKeyFrame = 1;
+		}
+
 		public float GetTimeInterval(float time)
 		{
 			var oldRange = Next.Time - Current.Time;
@@ -67,16 +73,42 @@ namespace winsandbox.Stargates
 		}
 		public float GetValue( float time )
 		{
+			if ( time <= Keyframes[0].Time )
+				Reset();
 			if (GetTimeInterval(time) >= 1 )
 			{
 				Advance();
 			}
-			return MathX.LerpTo( Current, Next, Ease(GetTimeInterval( time ), Current.Easing) );
+			return MathX.LerpTo( Current, Next, Ease(GetTimeInterval( time ), Next.Easing) );
 		}
 
 		private float Ease( float v, EasingFunction easing )
 		{
-			return v;
+			switch ( easing )
+			{
+				case EasingFunction.Linear:
+					return v;
+				case EasingFunction.Exponential:
+					return Easing.EaseInOut(v);
+				default:
+					return v;
+			}
+		}
+
+		public Timeline WithKeyframe( Keyframe k )
+		{
+			Keyframes.Add( k );
+
+			Keyframes = Keyframes.OrderBy( x => x.Time).ToList();
+
+			return this;
+		}
+
+		public Timeline WithKeyframe( float time, float value = 0.0f, EasingFunction easing = EasingFunction.Linear )
+		{
+			Keyframe k = new( time, value, easing );
+
+			return WithKeyframe( k );
 		}
 	}
 }
