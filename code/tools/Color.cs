@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Sandbox;
+using Sandbox.Tools;
+using System;
 
-namespace Sandbox.Tools
+namespace winsandbox.tools
 {
 	[Library( "tool_color", Title = "Color", Description = "Change render color and alpha of entities", Group = "construction" )]
 	public partial class ColorTool : BaseTool

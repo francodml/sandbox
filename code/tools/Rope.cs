@@ -1,4 +1,7 @@
-﻿namespace Sandbox.Tools
+﻿using Sandbox;
+using Sandbox.Tools;
+
+namespace winsandbox.tools
 {
 	[Library( "tool_rope", Title = "Rope", Description = "Join two things together with a rope", Group = "construction" )]
 	public partial class RopeTool : BaseTool

@@ -1,5 +1,7 @@
 ﻿
-namespace Sandbox
+using Sandbox;
+
+namespace winsandbox.entities.car
 {
 	public class CarAnimator : PawnAnimator
 	{

@@ -1,4 +1,7 @@
-﻿namespace Sandbox.Tools
+﻿using Sandbox;
+using Sandbox.Tools;
+
+namespace winsandbox.tools
 {
 	[Library( "tool_weld", Title = "Weld", Description = "Weld stuff together", Group = "construction" )]
 	public partial class WeldTool : BaseTool

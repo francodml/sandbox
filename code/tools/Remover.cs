@@ -1,4 +1,7 @@
-﻿namespace Sandbox.Tools
+﻿using Sandbox;
+using Sandbox.Tools;
+
+namespace winsandbox.tools
 {
 	[Library( "tool_remover", Title = "Remover", Description = "Remove entities", Group = "construction" )]
 	public partial class RemoverTool : BaseTool

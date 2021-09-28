@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Sandbox;
+using Sandbox.Tools;
+using System;
 
-namespace Sandbox.Tools
+namespace winsandbox.tools
 {
 	[Library( "tool_resizer", Title = "Resizer", Description = "Change the scale of things", Group = "construction" )]
 	public partial class ResizerTool : BaseTool
@@ -38,7 +40,7 @@ namespace Sandbox.Tools
 				if ( entity.PhysicsGroup == null )
 					return;
 
-				var scale = reset ? 1.0f : Math.Clamp( entity.Scale + ((0.5f * Time.Delta) * resizeDir), 0.4f, 4.0f );
+				var scale = reset ? 1.0f : Math.Clamp( entity.Scale + 0.5f * Time.Delta * resizeDir, 0.4f, 4.0f );
 
 				if ( entity.Scale != scale )
 				{

@@ -1,4 +1,7 @@
-﻿namespace Sandbox.Tools
+﻿using Sandbox;
+using Sandbox.Tools;
+
+namespace winsandbox.tools
 {
 	[Library( "tool_wheel", Title = "Wheel", Description = "A wheel that you can turn on and off (but actually can't yet)", Group = "construction" )]
 	public partial class WheelTool : BaseTool

@@ -1,4 +1,7 @@
-﻿namespace Sandbox.Tools
+﻿using Sandbox;
+using Sandbox.Tools;
+
+namespace winsandbox.tools
 {
 	[Library( "tool_barrelgun", Title = "Barrel Shooter", Description = "Shoot barrels", Group = "fun" )]
 	public class BoxShooter : BaseTool

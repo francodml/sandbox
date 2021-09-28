@@ -1,4 +1,7 @@
-﻿namespace Sandbox.Tools
+﻿using Sandbox;
+using Sandbox.Tools;
+
+namespace winsandbox.tools
 {
 	[Library( "tool_light", Title = "Lights", Description = "A dynamic point light", Group = "construction" )]
 	public partial class LightTool : BaseTool

@@ -1,5 +1,7 @@
 ﻿
-namespace Sandbox.Tools
+using Sandbox;
+
+namespace winsandbox
 {
 	public class PreviewEntity : ModelEntity
 	{
