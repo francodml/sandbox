@@ -2,21 +2,18 @@
 
 Layer0
 {
-	shader "complex.vfx"
+	shader "vr_simple.vfx"
 
 	//---- PBR ----
 	F_METALNESS_TEXTURE 1
-	F_SPECULAR 1
 
 	//---- Ambient Occlusion ----
-	g_flAmbientOcclusionDirectDiffuse "0.000"
-	g_flAmbientOcclusionDirectSpecular "0.000"
-	TextureAmbientOcclusion ".blends/Substance Exports/Stargate_SG1_Stargate_SG1_AO.png"
+	TextureAmbientOcclusion ".blends/Substance Exports/DHD/DHD_DHD_Base_AO.png"
 
 	//---- Color ----
 	g_flModelTintAmount "1.000"
 	g_vColorTint "[1.000000 1.000000 1.000000 0.000000]"
-	TextureColor ".blends/Substance Exports/Stargate_SG1_Stargate_SG1_Color.png"
+	TextureColor ".blends/Substance Exports/DHD/DHD_DHD_Base_Color.png"
 
 	//---- Fade ----
 	g_flFadeExponent "1.000"
@@ -29,13 +26,13 @@ Layer0
 	g_flDirectionalLightmapStrength "1.000"
 
 	//---- Metalness ----
-	TextureMetalness ".blends/Substance Exports/Stargate_SG1_Stargate_SG1_Metal.png"
+	TextureMetalness ".blends/Substance Exports/DHD/DHD_DHD_Base_Metal.png"
 
 	//---- Normal ----
-	TextureNormal ".blends/Substance Exports/Stargate_SG1_Stargate_SG1_Normal.png"
+	TextureNormal ".blends/Substance Exports/DHD/DHD_DHD_Base_Normal.png"
 
 	//---- Roughness ----
-	TextureRoughness ".blends/Substance Exports/Stargate_SG1_Stargate_SG1_Rough.png"
+	TextureRoughness ".blends/Substance Exports/DHD/DHD_DHD_Base_Rough.png"
 
 	//---- Texture Coordinates ----
 	g_nScaleTexCoordUByModelScaleAxis "0"

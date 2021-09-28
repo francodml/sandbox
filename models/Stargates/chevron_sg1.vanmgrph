@@ -231,7 +231,7 @@
 			{
 				_class = "CStateMachineAnimNode"
 				m_sName = "Regular Engage"
-				m_vecPosition = [ -672.0, -256.0 ]
+				m_vecPosition = [ -688.0, -256.0 ]
 				m_nNodeID = 
 				{
 					m_id = 977630576
@@ -1100,7 +1100,7 @@
 						{
 							m_id = 1664605035
 						}
-						m_position = [ 160.0, -112.0 ]
+						m_position = [ 272.0, -128.0 ]
 						m_bIsStartState = false
 						m_bIsEndtState = false
 						m_bIsPassthrough = false

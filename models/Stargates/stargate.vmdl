@@ -15,7 +15,7 @@
 						[
 							{
 								from = "stargate_sg1.vmat"
-								to = "materials/generic/wall_panel_d_metal_galvanized.vmat"
+								to = "materials/stargates/stargate_sg1.vmat"
 							},
 							{
 								from = "chevron.vmat"
@@ -67,7 +67,7 @@
 				[
 					{
 						_class = "RenderMeshFile"
-						filename = "models/stargates/stargate.fbx"
+						filename = ".blends/stargate_sg1.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 1.0
@@ -121,15 +121,6 @@
 				_class = "AttachmentList"
 				children = 
 				[
-					{
-						_class = "Attachment"
-						name = "Chevron07"
-						parent_bone = "Attach_Chevron07"
-						relative_origin = [ 0.0, 0.0, 0.0 ]
-						relative_angles = [ 0.0, 0.0, 0.0 ]
-						weight = 1.0
-						ignore_rotation = false
-					},
 					{
 						_class = "Attachment"
 						name = "Chevron01"
@@ -186,7 +177,7 @@
 					},
 					{
 						_class = "Attachment"
-						name = "Chevron08"
+						name = "Chevron07"
 						parent_bone = "Attach_Chevron08"
 						relative_origin = [ 0.0, 0.0, 0.0 ]
 						relative_angles = [ 0.0, 0.0, 0.0 ]
@@ -195,8 +186,17 @@
 					},
 					{
 						_class = "Attachment"
-						name = "Chevron09"
+						name = "Chevron08"
 						parent_bone = "Attach_Chevron09"
+						relative_origin = [ 0.0, 0.0, 0.0 ]
+						relative_angles = [ 0.0, 0.0, 0.0 ]
+						weight = 1.0
+						ignore_rotation = false
+					},
+					{
+						_class = "Attachment"
+						name = "Chevron09"
+						parent_bone = "Attach_Chevron07"
 						relative_origin = [ 0.0, 0.0, 0.0 ]
 						relative_angles = [ 0.0, 0.0, 0.0 ]
 						weight = 1.0

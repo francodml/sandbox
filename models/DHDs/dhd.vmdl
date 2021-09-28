@@ -23,8 +23,22 @@
 				[
 					{
 						_class = "DefaultMaterialGroup"
-						remaps = [  ]
-						use_global_default = true
+						remaps = 
+						[
+							{
+								from = "dhd_base.vmat"
+								to = "materials/stargates/dhd_milkyway_base.vmat"
+							},
+							{
+								from = "dhd_plinth.vmat"
+								to = "materials/stargates/dhd_milkyway_plinth.vmat"
+							},
+							{
+								from = "dhd_horns.vmat"
+								to = "materials/stargates/dhd_milkyway_horns.vmat"
+							},
+						]
+						use_global_default = false
 						global_default_material = "materials/shiny_white.vmat"
 					},
 				]
@@ -89,7 +103,7 @@
 								_class = "DiscardSkeleton"
 							},
 						]
-						filename = ".blends/DHD/DHD.fbx"
+						filename = ".blends/dhd/dhd.fbx"
 						import_translation = [ 0.0, 0.0, 0.0 ]
 						import_rotation = [ 0.0, 0.0, 0.0 ]
 						import_scale = 1.0

@@ -2,51 +2,49 @@
 
 Layer0
 {
-	shader "complex.vfx"
-
-	//---- PBR ----
-	F_SELF_ILLUM 1
-	F_SPECULAR 1
-
-	//---- Translucent ----
-	F_TRANSLUCENT 1
+	shader "glass.vfx"
 
 	//---- Ambient Occlusion ----
-	g_flAmbientOcclusionDirectDiffuse "0.000"
-	g_flAmbientOcclusionDirectSpecular "0.000"
-	TextureAmbientOcclusion "materials/default/default_ao.tga"
+	TextureAmbientOcclusion ".blends/substance exports/chevron_sg1_chevron.light_ao.png"
 
 	//---- Color ----
 	g_flModelTintAmount "1.000"
 	g_vColorTint "[0.780392 0.454902 0.172549 1.000000]"
-	TextureColor "materials/default/default_color.tga"
+	TextureColor ".blends/Substance Exports/Chevron_SG1_Chevron.Light_Color.png"
+
+	//---- Emissive ----
+	g_flEmissiveEdgeColorFalloff "5.000"
+	g_flEmissiveEdgeColorThickness "0.704"
+	g_flEmissiveStrength "7.434"
+	g_vEmissiveColor "[0.635294 0.168627 0.000000 1.000000]"
+	g_vEmissiveEdgeColor "[0.784314 0.415686 0.000000 1.000000]"
 
 	//---- Fade ----
 	g_flFadeExponent "1.000"
 
 	//---- Fog ----
-	g_bFogEnabled "1"
+	g_bAvoidDoubleFogging "1"
+	g_flGlassFogExtinctionAmount "0.000"
+
+	//---- Glass Color ----
+	g_flEdgeColorFalloff "3.000"
+	g_flEdgeColorMaxOpacity "0.500"
+	g_flEdgeColorThickness "0.100"
+	g_vEdgeColor "[0.000000 0.000000 0.000000 0.000000]"
+	GlassTintColor ".blends/substance exports/chevron_sg1_chevron.light_color.png"
 
 	//---- Lighting ----
-	g_flDirectionalLightmapMinZ "0.050"
+	g_flDirectionalLightmapMinZ "0.500"
 	g_flDirectionalLightmapStrength "1.000"
 
 	//---- Metalness ----
-	g_flMetalness "0.700"
+	g_flMetalness "1.000"
 
 	//---- Normal ----
-	TextureNormal "materials/default/default_normal.tga"
+	TextureNormal ".blends/substance exports/chevron_sg1_chevron.light_normal.png"
 
 	//---- Roughness ----
-	TextureRoughness "[0.654902 0.654902 0.654902 0.000000]"
-
-	//---- Self Illum ----
-	g_flSelfIllumAlbedoFactor "1.000"
-	g_flSelfIllumBrightness "6.329"
-	g_flSelfIllumScale "1.000"
-	g_vSelfIllumScrollSpeed "[0.000 0.000]"
-	g_vSelfIllumTint "[1.000000 0.549020 0.000000 1.000000]"
-	TextureSelfIllumMask "[1.000000 1.000000 1.000000 0.000000]"
+	TextureRoughness ".blends/substance exports/chevron_sg1_chevron.light_rough.png"
 
 	//---- Texture Coordinates ----
 	g_nScaleTexCoordUByModelScaleAxis "0"

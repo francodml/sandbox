@@ -11,12 +11,12 @@ Layer0
 	//---- Ambient Occlusion ----
 	g_flAmbientOcclusionDirectDiffuse "0.000"
 	g_flAmbientOcclusionDirectSpecular "0.000"
-	TextureAmbientOcclusion "materials/default/default_ao.tga"
+	TextureAmbientOcclusion ".blends/Substance Exports/Chevron_SG1_Chevron_AO.png"
 
 	//---- Color ----
 	g_flModelTintAmount "1.000"
-	g_vColorTint "[0.501961 0.501961 0.501961 1.000000]"
-	TextureColor "[1.000000 1.000000 1.000000 0.000000]"
+	g_vColorTint "[1.000000 1.000000 1.000000 1.000000]"
+	TextureColor ".blends/substance exports/chevron_sg1_chevron_color.png"
 
 	//---- Fade ----
 	g_flFadeExponent "1.000"
@@ -29,13 +29,13 @@ Layer0
 	g_flDirectionalLightmapStrength "1.000"
 
 	//---- Metalness ----
-	TextureMetalness "materials/stargates/sg_main_4mx4m_color_and_metal.jpg"
+	TextureMetalness ".blends/substance exports/chevron_sg1_chevron_metal.png"
 
 	//---- Normal ----
-	TextureNormal "materials/default/default_normal.tga"
+	TextureNormal ".blends/Substance Exports/Chevron_SG1_Chevron_Normal.png"
 
 	//---- Roughness ----
-	TextureRoughness "materials/stargates/sg_main_4mx4m_roughness.jpg"
+	TextureRoughness ".blends/substance exports/chevron_sg1_chevron_rough.png"
 
 	//---- Texture Coordinates ----
 	g_nScaleTexCoordUByModelScaleAxis "0"
