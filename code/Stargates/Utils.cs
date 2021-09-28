@@ -12,6 +12,14 @@ namespace winsandbox.Stargates
 		Incoming,
 		Outgoing
 	}
+
+	public enum GateState
+	{
+		Idle,
+		Dialling,
+		Open,
+		Closing
+	}
 	public static partial class Utils
 	{
 		public static List<char> AddressSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*@".ToList();
