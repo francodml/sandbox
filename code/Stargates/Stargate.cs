@@ -24,6 +24,7 @@ namespace winsandbox.Stargates
 		[Net, Category( "Stargate" ), Reset( ConnectionType.None )] public ConnectionType Connection { get; private set; } = ConnectionType.None;
 		[Net, Category( "Stargate" )] public string CurrentRingSymbol => ring.CurrentSymbol;
 		public DHD DHD { get; set; }
+		[Net, Category( "Stargate" ), Reset( GateState.Idle )] public GateState State { get; private set; } = GateState.Idle;
 
 		[Net, Reset( "" )] public string OtherAddress { get; set; } = "";
 		[Net, Reset( null )] private Stargate OtherGate { get; set; }
@@ -31,6 +32,7 @@ namespace winsandbox.Stargates
 		private EventHorizon eventHorizon;
 		[Net] private Ring ring { get; set; }
 		private List<Chevron> chevrons = new();
+		private Chevron TopChevron => chevrons[8];
 
 		public override void Spawn()
 		{
@@ -130,6 +132,7 @@ namespace winsandbox.Stargates
 
 			eventHorizon.Enable();
 
+			State = GateState.Open;
 			Connection = ConnectionType.Outgoing;
 			Busy = true;
 			SetChevrons( true );
@@ -143,14 +146,15 @@ namespace winsandbox.Stargates
 		public async void FailConnection()
 		{
 			Busy = true;
+			State = GateState.Closing;
 			PlaySound( "stargates.milkyway.fail" );
 			await Task.DelaySeconds( 3.5f );
-			PlaySound( "stargates.milkyway.chevron.close" );
 			Reset();
 		}
 
 		public void ConnectIncoming(Stargate other)
 		{
+			State = GateState.Open;
 			Connection = ConnectionType.Incoming;
 			OtherAddress = other.Address;
 			OtherGate = other;
@@ -162,40 +166,48 @@ namespace winsandbox.Stargates
 				DHD.UpdateFromGate();
 		}
 
-		public void Disconnect()
+		public async void Disconnect()
 		{
 			if ( !IsServer | OtherGate == null )
 				return;
 
-			Connection = ConnectionType.None;
-			OtherAddress = string.Empty;
-			eventHorizon.Disable();
+			State = GateState.Closing;
 			Busy = false;
 
 			if ( OtherGate.IsValid() && OtherGate.Busy )
 				OtherGate.Disconnect();
 
 			OtherGate = null;
-			SetChevrons( false );
+			await eventHorizon.Disable();
+
 			Reset();
 		}
 
-		public void Reset()
+		public async void Reset()
 		{
+			if ( State == GateState.Dialling )
+			{
+				PlaySound( "stargates.milkyway.runningfail" );
+				await Task.DelaySeconds( 1 );
+			}
 			ResetAttribute.ResetAll( this );
-			SetChevrons( false );
-			chevrons[6].ResetBones();
+			SetChevrons( false, true );
+			TopChevron.ResetBones();
 			ring.Stop();
 			AddressIndexMap = null;
 			if ( DHD != null )
 				DHD.Reset();
 		}
 
-		public void SetChevrons(bool state)
+		public void SetChevrons(bool state, bool sound = false)
 		{
 			if ( IsClient )
 				return;
-			foreach( Chevron chev in chevrons )
+			if ( !IsValid )
+				return;
+			if ( sound )
+				PlaySound( $"stargates.milkyway.chevron.{(state ? "open" : "close")}" );
+			foreach ( Chevron chev in chevrons )
 			{
 				chev.Toggle(state: state);
 			}
