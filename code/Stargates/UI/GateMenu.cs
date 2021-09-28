@@ -7,7 +7,7 @@ using Sandbox;
 using Sandbox.UI;
 using Sandbox.UI.Construct;
 
-namespace winsandbox.Stargates
+namespace winsandbox.Stargates.UI
 {
 	public class GateMenu : Panel
 	{
@@ -29,7 +29,7 @@ namespace winsandbox.Stargates
 					Clipboard.SetText( Gate.Address );
 					ChatBox.AddInformation( "Copied address to clipboard" );
 				} );
-				titlebar.Add.Button( "Close", "close", () => this.Delete() );
+				titlebar.Add.Button( "Close", "close", () => Delete() );
 			}
 
 			var content = Add.Panel( "content" );
@@ -69,7 +69,7 @@ namespace winsandbox.Stargates
 
 		public void SetGate( Stargate gate )
 		{
-			this.Gate = gate;
+			Gate = gate;
 			gateaddress.Text = Gate.Address;
 			ourAddress.Text = Gate.Address;
 		}
@@ -83,7 +83,7 @@ namespace winsandbox.Stargates
 				address.Substring( 0, 6 );
 			}
 
-			var x = address.Where( ( c, i ) => i > 0 && address.Last() == address[i-1] ).Cast<char?>().FirstOrDefault() != null;
+			var x = address.Where( ( c, i ) => i > 0 && address.Last() == address[i - 1] ).Cast<char?>().FirstOrDefault() != null;
 			if ( x )
 			{
 				address = address.Remove( address.Length - 1 );

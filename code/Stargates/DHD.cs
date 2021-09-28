@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Sandbox;
+using System.ComponentModel;
 
 namespace winsandbox.Stargates
 {
@@ -12,7 +13,7 @@ namespace winsandbox.Stargates
 	public partial class DHD : ModelEntity
 	{
 		public const string GlyphOrder = "0IHGFEDCBA987654321J@ZYXWVUTSRQP#ONMLK";
-		[Property("Stargate", "The Stargate this DHD is linked to", Group = "Stargate", FGDType = "target_destination")]
+		[Property("Stargate", "The Stargate this DHD is linked to"), Category("Stargate"), FGDType("target_destination")]
 		public string hammer_stargate { get; set; }
 		public Stargate Stargate { get; set; }
 		[Net] public string CurrentAddress { get; set; } = "";
@@ -112,10 +113,10 @@ namespace winsandbox.Stargates
 
 		public void KeyPress( string glyph, bool active )
 		{
-			if ( Stargate.DHD != this )
-				Stargate.DHD = this;
 			if ( Stargate != null && Stargate.IsValid )
 			{
+				if ( Stargate.DHD != this )
+					Stargate.DHD = this;
 				Stargate.DHDKeypress( glyph, active );
 			}
 			if ( active )
@@ -123,6 +124,8 @@ namespace winsandbox.Stargates
 				if ( !Active )
 					Active = true;
 				if ( CurrentAddress.Length == 8 && glyph != PointOfOrigin & glyph != "SUBMIT" )
+					return;
+				if ( glyph == "SUBMIT" )
 					return;
 				CurrentAddress += glyph;
 				AddressIndexMap[glyph] = AddressIndexMap.Count;
@@ -134,7 +137,7 @@ namespace winsandbox.Stargates
 				var index = AddressIndexMap[glyph];
 				CurrentAddress = CurrentAddress.Remove( index, 1 );
 				if ( CurrentAddress.Length == 0 )
-					Active = false;
+					Reset();
 				RegenerateIndexMap();
 			}
 		}

@@ -2,7 +2,7 @@
 using Sandbox;
 using Sandbox.UI;
 
-namespace winsandbox.Stargates
+namespace winsandbox.Stargates.UI
 {
 	[Library]
 	public class MouseDragPanel : Panel
@@ -43,7 +43,7 @@ namespace winsandbox.Stargates
 
 			if ( IsMoving )
 			{
-				var newPos = (Mouse.Position * ScaleFromScreen) - InitialPos;
+				var newPos = Mouse.Position * ScaleFromScreen - InitialPos;
 
 				Window.Style.Left = Length.Pixels( newPos.x );
 				Window.Style.Top = Length.Pixels( newPos.y );

@@ -25,6 +25,7 @@ namespace winsandbox.Stargates
 			SetModel( "models/stargates/eventhorizon.vmdl" );
 			SetupPhysicsFromModel( PhysicsMotionType.Dynamic, false );
 			PhysicsBody.BodyType = PhysicsBodyType.Static;
+			Transmit = TransmitType.Always;
 			EnableSolidCollisions = false;
 			UsePhysicsCollision = false;
 			EnableAllCollisions = false;
@@ -80,13 +81,27 @@ namespace winsandbox.Stargates
 			Enabled = true;
 			EnableDrawing = true;
 			PlaySound( "stargates.milkyway.open" );
+			ToggleStateClient( To.Everyone, false );
 			Vortex();
 		}
-		public void Disable()
+		public async Task Disable()
 		{
+			PlaySound( "stargates.milkyway.close" );
+			ToggleStateClient( To.Everyone, false );
+			await Task.DelaySeconds( 2.6f );
+			if ( !this.IsValid | this == null )
+				return;
 			Enabled = false;
 			EnableDrawing = false;
-			PlaySound( "stargates.milkyway.close" );
+		}
+
+		///<summary>Passes state to the shader. This is used to determine when the event horizon should play the open animation.</summary>
+		[ClientRpc]
+		public void ToggleStateClient(bool state)
+		{
+			if ( SceneObject == null || !SceneObject.IsValid() )
+				return;
+			SceneObject.SetValue( "State", state );
 		}
 
 		private async void Vortex()
@@ -101,6 +116,8 @@ namespace winsandbox.Stargates
 		[Event.Frame]
 		public void OnFrame()
 		{
+			if ( SceneObject == null || !SceneObject.IsValid() )
+				return;
 			SceneObject.SetValue( "Time", openTime );
 
 			SceneObject.SetValue( "WorldPos", Position );

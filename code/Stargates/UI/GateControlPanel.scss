@@ -147,10 +147,6 @@
                 border-bottom-left-radius: 0px;
                 margin: 0px;
             }
-
-            label {
-                font-size: 11px;
-            }
         }
     }
 
@@ -184,6 +180,31 @@
             border-top: 1px solid darkgray;
             color: darkgray;
             padding: 0px px;
+        }
+    }
+
+    .icon {
+        label{
+            font-size: 20px !important;
+        }
+        color: white;
+        font-family: MaterialIcons;
+        padding:5px;
+
+        &.outline {
+            font-family: MaterialIconsOutlined;
+        }
+
+        &.round {
+            font-family: MaterialIconsRound;
+        }
+
+        &.sharp {
+            font-family: MaterialIconsSharp;
+        }
+
+        &.twotone {
+            font-family: MaterialIconsTwoTone;
         }
     }
 }

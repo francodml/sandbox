@@ -27,7 +27,8 @@ namespace winsandbox.Stargates
 			light.Position = this.Position + (Rotation.Forward * 15);
 			light.SetParent( this, "chevron_top" );
 			light.SetLightColor( Color.Parse( "#FF7F32" ).GetValueOrDefault() );
-			light.Brightness = 2;
+			light.Brightness = 3;
+			light.Range = 128;
 			light.Enabled = false;
 			UseAnimGraph = true;
 		}
@@ -55,7 +56,7 @@ namespace winsandbox.Stargates
 			SetAnimBool( "FailedLock", FailedLock );
 			SetAnimBool( "TriggerLock", true );
 			stayLit = StayLit;
-			await GameTask.Delay( 10 );
+			await GameTask.Delay( 1000 );
 			SetAnimBool( "TriggerLock", false );
 		}
 
@@ -63,7 +64,8 @@ namespace winsandbox.Stargates
 		{
 			base.OnAnimGraphCreated();
 
-			SetAnimBool( "TriggerLock", false );
+			ResetAnimParams();
+
 		}
 
 		protected override void OnAnimGraphTag( string tag, AnimGraphTagEvent fireMode )
