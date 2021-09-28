@@ -15,7 +15,7 @@ namespace winsandbox.Stargates
 		[Editor, Category( "Stargate" )]
 		[Reset( false )] public bool ShouldDenyDHDInput { get; private set; } = false;
 		[Reset( 0 ), Category( "Stargate" )] public int currentChevron { get; private set; } = 0;
-		[Reset(false)] public bool Dialling { get; private set; } = false;
+		[Reset(false)] public bool DoSlowDial { get; private set; } = false;
 		private bool locking = false;
 		private bool doingStuff;
 
@@ -27,33 +27,32 @@ namespace winsandbox.Stargates
 		{
 			if ( !IsServer )
 				return;
-			if ( (currentChevron == 9 || currentChevron == 6) && !chevrons[6].Engaged)
+			if ( (currentChevron == 9 || currentChevron == 6) && !TopChevron.Engaged)
 			{
 				LockChevron(true);
 				return;
 			}
-			chevrons[6].OtherChevron = chevrons[currentChevron];
-			chevrons[6].Animate();
+			TopChevron.OtherChevron = chevrons[currentChevron];
+			TopChevron.Animate();
 			currentChevron++;
-			if ( OtherAddress.Length > 7 && currentChevron == 6 )
-				currentChevron++;
 		}
 
 		public void LockChevron( bool autoconnect = false )
 		{
-			var chevron = chevrons[6];
+			var chevron = TopChevron;
 			chevron.IsFinalLock = true;
 			var other = FindGate();
+			OtherGate = other;
 			if ( other == null )
 				chevron.FailedLock = true;
 			else
 			{
-				other.SetChevrons( true );
+				other.SetChevrons( true, true );
 			}
 			chevron.Animate(true);
 			if (autoconnect)
 				currentChevron = 0;
-			Dialling = false;
+			DoSlowDial = false;
 			locking = autoconnect;
 		}
 
@@ -72,7 +71,6 @@ namespace winsandbox.Stargates
 					if ( Connection != ConnectionType.None )
 					{
 						Disconnect();
-						DHD.Reset();
 						break;
 					}
 					Connect();
@@ -81,13 +79,15 @@ namespace winsandbox.Stargates
 				case var value when value == PointOfOrigin:
 					if ( state )
 					{
-						ring.RotateToSymbol( PointOfOrigin );
+						ring.Stop();
 						ShouldDenyDHDInput = true;
 						shouldLockOnStop = true;
 					}
-					else if ( chevrons[6].Engaged )
+					else if ( !state )
 					{
-						chevrons[6].Toggle( false, false );
+						TopChevron.Toggle( false, false );
+						if ( OtherGate != null && OtherGate.IsValid )
+							OtherGate.SetChevrons( false, true );
 						ShouldDenyDHDInput = false;
 						ring.Start();
 					}
@@ -95,6 +95,7 @@ namespace winsandbox.Stargates
 				default:
 					if ( state )
 					{
+						State = GateState.Dialling;
 						if ( !ring.Rotating )
 							ring.Start();
 						if ( OtherAddress.Length == 8 )
@@ -103,20 +104,17 @@ namespace winsandbox.Stargates
 						AddressIndexMap[glyph] = AddressIndexMap.Count;
 						chevrons[currentChevron].Toggle( silent: false );
 						currentChevron++;
-						if ( OtherAddress.Length == 6 && currentChevron == 6 )
-							currentChevron++;
 					} else
 					{
 						if ( !AddressIndexMap.ContainsKey( glyph ) )
 							break;
 						var index = AddressIndexMap[glyph];
 						currentChevron--;
-						if ( OtherAddress.Length == 6 && currentChevron == 6 )
-							currentChevron--;
 						chevrons[currentChevron].Toggle( silent: false );
 						OtherAddress = OtherAddress.Remove( index, 1 );
 						if ( OtherAddress.Length == 0 )
 						{
+							State = GateState.Idle;
 							Reset();
 							break;
 						}
@@ -154,35 +152,56 @@ namespace winsandbox.Stargates
 
 		public async void FastDial( string address )
 		{
+			if ( Busy | State == GateState.Dialling )
+				return;
+
+			State = GateState.Dialling;
 			OtherAddress = address;
-			ring.RotateToSymbol(PointOfOrigin);
+			ring.Start();
 			shouldLockOnStop = true;
 			shouldConnectOnStop = true;
 			await Task.DelaySeconds( 0.5f );
 			int j = 0;
 			for (int i = 0; i < OtherAddress.Length; i++ )
 			{
+				if ( this == null | !this.IsValid )
+					return;
+				if ( State != GateState.Dialling )
+					break;
 				chevrons[j].Toggle( true );
 				if ( DHD != null )
 					DHD.SetKey( OtherAddress[i].ToString(), true );
-				PlaySound( "dhd.milkyway.press" ).SetVolume( 7.0f );
+				PlaySound( "stargates.milkyway.chevron.open" );
 				await Task.DelaySeconds( 0.5f + Rand.Float( 0.5f ) );
 				j++;
 				if ( j == 6 )
 					j++;
 			}
-			PlaySound( "dhd.milkyway.press" ).SetVolume( 7.0f );
+			if ( this == null | !this.IsValid )
+				return;
+			if ( State != GateState.Dialling )
+				return;
 			if ( DHD != null )
 				DHD.SetKey( PointOfOrigin, true );
+			ring.Stop();
+		}
+
+		public void SlowDial( string address )
+		{
+			if ( Busy | State == GateState.Dialling )
+				return;
+			State = GateState.Dialling;
+			OtherAddress = address;
+			DoSlowDial = true;
 		}
 
 		[Event.Tick.Server]
 		public void Tick()
 		{
-			if ( Dialling && !string.IsNullOrEmpty(OtherAddress) )
+			if ( DoSlowDial && !string.IsNullOrEmpty(OtherAddress) )
 			{
 				var desiredSymbol = currentChevron < OtherAddress.Length ? OtherAddress[currentChevron].ToString() : "#";
-				if ( !chevrons[6].Continue )
+				if ( !TopChevron.Continue )
 					return;
 				if ( !ring.Rotating && ring.CurrentSymbol != desiredSymbol )
 					ring.RotateToSymbol( desiredSymbol );
@@ -195,7 +214,7 @@ namespace winsandbox.Stargates
 			if ( currentChevron > 8 )
 				currentChevron = 6;
 
-			if ( locking && chevrons[6].Continue )
+			if ( locking && TopChevron.Continue )
 			{
 				locking = false;
 				Connect();

@@ -15,8 +15,7 @@ namespace winsandbox.Stargates
 		{
 			if ( FindByIndex( GateIdent ) is Stargate g )
 			{
-				g.OtherAddress = address;
-				g.Dialling = true;
+				g.SlowDial( address );
 			}
 		}
 
@@ -39,8 +38,7 @@ namespace winsandbox.Stargates
 		{
 			if ( Entity.FindByIndex( GateIdent ) is Stargate g && g.IsValid() )
 			{
-				g.Connect( address );
-				//g.FastDial( address );
+				g.FastDial( address );
 			}
 		}
 
