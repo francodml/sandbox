@@ -42,6 +42,9 @@ namespace winsandbox.Stargates
 		Hold
 	}
 
+	/// <summary>
+	/// Represents a timeline with keyframes. Can provide interpolated values based on time.
+	/// </summary>
 	class Timeline
 	{
 		public List<Keyframe> Keyframes;
@@ -72,11 +75,22 @@ namespace winsandbox.Stargates
 			NextKeyFrame = 1;
 		}
 
+		/// <summary>
+		/// Gets the interval representing progress from the current keyframe to the next at the current time
+		/// </summary>
+		/// <param name="time">Time since the beginning of the timeline (current playback time)</param>
+		/// <returns>Keyframe progress, between 0.0 and 1.0</returns>
 		public float GetTimeInterval(float time)
 		{
 			var oldRange = Next.Time - Current.Time;
 			return Math.Clamp((time - Current.Time) / oldRange, 0.0f, 1.0f);
 		}
+
+		/// <summary>
+		/// Gets the interpolated value between the current and next keyframes based on time
+		/// </summary>
+		/// <param name="time">Time since the beginning of the timeline (current playback time)</param>
+		/// <returns>Value determined by the keyframes, interpolated over time</returns>
 		public float GetValue( float time )
 		{
 			if ( time <= Keyframes[0].Time )
@@ -105,6 +119,11 @@ namespace winsandbox.Stargates
 			}
 		}
 
+		/// <summary>
+		/// Adds a keyframe to the timeline. Returns the timeline itself for method chaining.
+		/// </summary>
+		/// <param name="k">A keyframe</param>
+		/// <returns></returns>
 		public Timeline WithKeyframe( Keyframe k )
 		{
 			Keyframes.Add( k );
@@ -113,7 +132,13 @@ namespace winsandbox.Stargates
 
 			return this;
 		}
-
+		/// <summary>
+		/// Adds a keyframe to the timeline. Returns the timeline itself for method chaining.
+		/// </summary>
+		/// <param name="time">Keyframe time</param>
+		/// <param name="value">Keyframe value</param>
+		/// <param name="easing">Keyframe easing function</param>
+		/// <returns></returns>
 		public Timeline WithKeyframe( float time, float value = 0.0f, EasingFunction easing = EasingFunction.Linear )
 		{
 			Keyframe k = new( time, value, easing );
