@@ -1,7 +1,6 @@
 ﻿using Sandbox;
 using winsandbox.sandbox_extensions;
 
-[Library( "winsbox", Title = "Win's Sandbox" )]
 partial class WinSandbox : Game
 {
 	public WinSandbox()
