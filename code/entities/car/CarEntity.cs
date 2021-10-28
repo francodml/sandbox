@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using System;
+using winsandbox.entities.car;
 
 [Library( "ent_car", Title = "Car", Spawnable = true )]
 public partial class CarEntity : Prop, IUse
