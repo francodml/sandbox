@@ -71,7 +71,7 @@ namespace winsandbox.tools
 					QuadraticAttenuation = 1.0f,
 					Brightness = 1,
 					Color = Color.Random,
-					LightCookie = Texture.Load( "materials/effects/lightcookie.vtex" )
+					//LightCookie = Texture.Load( "materials/effects/lightcookie.vtex" )
 				};
 
 				light.UseFogNoShadows();
