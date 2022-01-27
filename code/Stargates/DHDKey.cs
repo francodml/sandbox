@@ -48,7 +48,7 @@ namespace winsandbox.Stargates
 			{
 				if ( DHD.Active )
 					SubmitDelay();
-				else
+				else if (DHD.Stargate != null)
 					DHD.Stargate.OpenMenu(To.Single(actv));
 				return false;
 			}
