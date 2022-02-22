@@ -1,12 +1,12 @@
 {
-  "SharedAssets": "*.*",
   "Title": "Winsandbox",
   "Type": "game",
-  "Org": "local",
+  "Org": "win",
   "Ident": "winsandbox",
   "Schema": 1,
-  "HasAssets": true,
+  "HasAssets": false,
   "AssetsPath": "",
+  "ResourcePaths": null,
   "HasCode": true,
   "CodePath": "code",
   "RootNamespace": "winsandbox"
