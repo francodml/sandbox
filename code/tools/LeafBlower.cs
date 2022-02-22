@@ -21,8 +21,8 @@ namespace winsandbox.tools
 				if ( !push && !Input.Down( InputButton.Attack2 ) )
 					return;
 
-				var startPos = Owner.EyePos;
-				var dir = Owner.EyeRot.Forward;
+				var startPos = Owner.EyePosition;
+				var dir = Owner.EyeRotation.Forward;
 
 				var tr = Trace.Ray( startPos, startPos + dir * MaxTraceDistance )
 					.Ignore( Owner )
@@ -43,7 +43,7 @@ namespace winsandbox.tools
 				if ( !body.IsValid() )
 					return;
 
-				var direction = tr.EndPos - tr.StartPos;
+				var direction = tr.EndPosition - tr.StartPosition;
 				var distance = direction.Length;
 				var ratio = (1.0f - distance / MaxDistance).Clamp( 0, 1 ) * (push ? 1.0f : -1.0f);
 				var force = direction * (Force * ratio);
@@ -53,7 +53,7 @@ namespace winsandbox.tools
 					force *= body.Mass;
 				}
 
-				body.ApplyForceAt( tr.EndPos, force );
+				body.ApplyForceAt( tr.EndPosition, force );
 			}
 		}
 	}
