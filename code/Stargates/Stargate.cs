@@ -91,13 +91,20 @@ namespace winsandbox.Stargates
 		public bool OnUse( Entity user )
 		{
 			OpenMenu( To.Single( user ) );
+			if ( user is Player p )
+			{
+				p.Controller = new StargateMenuPC(p.EyeRotation);
+			}
 			return false;
 		}
 
 		[ClientRpc]
 		public void OpenMenu()
 		{
+			if ( Local.Hud.ChildrenOfType<GateControlPanel>().Count() != 0 )
+				return;
 			var menu = new GateControlPanel( this );
+			Local.Pawn.Tags.Add( "Stargate.PanelOpen" );
 			Local.Hud.AddChild( menu );
 		}
 
