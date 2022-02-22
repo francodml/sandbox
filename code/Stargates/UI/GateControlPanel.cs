@@ -16,10 +16,15 @@ namespace winsandbox.Stargates.UI
 		private TextEntry ourAddress;
 		public TextEntry remoteAddress;
 
+		protected bool MouseInside { get; set; }
+
+		protected Angles lookatangles;
+
 		public GateControlPanel( Stargate gate )
 		{
 			StyleSheet.Load( "Stargates/UI/GateControlPanel.scss" );
 			Gate = gate;
+			lookatangles = Local.Pawn.EyeRot.Angles();
 
 			var titlebar = AddChild<Titlebar>();
 			{
@@ -39,13 +44,13 @@ namespace winsandbox.Stargates.UI
 					ourAddress.AddEventListener( "onchange", () => ourAddress.Text = CleanupAddress( ourAddress.Text ) );
 
 					Action action = () =>
-										   {
-											   if ( ourAddress.Text.Length == 6 )
-											   {
-												   Sound.FromScreen( "stargate.ui.confirm" );
-												   Stargate.UI_SetGateAddress( Gate.NetworkIdent, ourAddress.Text.ToUpper() );
-											   }
-										   };
+						{
+						   if ( ourAddress.Text.Length == 6 )
+						   {
+							   Sound.FromScreen( "stargate.ui.confirm" );
+							   Stargate.UI_SetGateAddress( Gate.NetworkIdent, ourAddress.Text.ToUpper() );
+						   }
+						};
 					ourAddress.AddEventListener( "onsubmit", action );
 
 					Button button = addressContainer.Add.Button( "Set", action );
@@ -56,10 +61,10 @@ namespace winsandbox.Stargates.UI
 					var gateName = namecontainer.Add.TextEntry( Gate.Name );
 					gateName.Placeholder = "Name";
 					Action action = () =>
-										   {
-											   Sound.FromScreen( "stargate.ui.confirm" );
-											   Stargate.UI_SetGateName( Gate.NetworkIdent, gateName.Text );
-										   };
+						{
+						   Sound.FromScreen( "stargate.ui.confirm" );
+						   Stargate.UI_SetGateName( Gate.NetworkIdent, gateName.Text );
+						};
 					gateName.AddEventListener( "onsubmit", action );
 
 					namecontainer.Add.Button( "Set", action );
@@ -92,6 +97,23 @@ namespace winsandbox.Stargates.UI
 
 				right.Add.Button( "Disconnect", "fill", () => Stargate.UI_Disconnect( Gate.NetworkIdent ) );
 			}
+		}
+
+		public override void OnDeleted()
+		{
+			base.OnDeleted();
+			Local.Pawn.Tags.Remove( "Stargate.PanelOpen" );
+		}
+
+		public override void Tick()
+		{
+			base.Tick();
+
+			MouseInside = IsInside( Mouse.Position );
+
+			Style.PointerEvents = MouseInside ? "all" : "visible";
+
+			Style.Dirty();
 		}
 
 		public string CleanupAddress( string address )
