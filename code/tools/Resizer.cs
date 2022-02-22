@@ -14,8 +14,8 @@ namespace winsandbox.tools
 
 			using ( Prediction.Off() )
 			{
-				var startPos = Owner.EyePos;
-				var dir = Owner.EyeRot.Forward;
+				var startPos = Owner.EyePosition;
+				var dir = Owner.EyeRotation.Forward;
 				int resizeDir = 0;
 				var reset = false;
 
@@ -46,7 +46,7 @@ namespace winsandbox.tools
 				{
 					entity.Scale = scale;
 					entity.PhysicsGroup.RebuildMass();
-					entity.PhysicsGroup.Wake();
+					entity.PhysicsGroup.Sleeping = false;
 
 					foreach ( var child in entity.Children )
 					{
@@ -57,13 +57,13 @@ namespace winsandbox.tools
 							continue;
 
 						child.PhysicsGroup.RebuildMass();
-						child.PhysicsGroup.Wake();
+						child.PhysicsGroup.Sleeping = false;
 					}
 				}
 
 				if ( Input.Pressed( InputButton.Attack1 ) || Input.Pressed( InputButton.Attack2 ) || reset )
 				{
-					CreateHitEffects( tr.EndPos );
+					CreateHitEffects( tr.EndPosition );
 				}
 			}
 		}
