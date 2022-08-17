@@ -13,16 +13,10 @@ namespace winsandbox.tools
 
 			using ( Prediction.Off() )
 			{
-				if ( !Input.Pressed( InputButton.Attack1 ) )
+				if ( !Input.Pressed( InputButton.PrimaryAttack ) )
 					return;
 
-				var startPos = Owner.EyePosition;
-				var dir = Owner.EyeRotation.Forward;
-
-				var tr = Trace.Ray( startPos, startPos + dir * MaxTraceDistance )
-					.Ignore( Owner )
-					.HitLayer( CollisionLayer.Debris )
-					.Run();
+				var tr = DoTrace();
 
 				if ( !tr.Hit || !tr.Entity.IsValid() )
 					return;

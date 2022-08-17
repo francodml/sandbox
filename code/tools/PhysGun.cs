@@ -40,10 +40,8 @@ public partial class PhysGun : Carriable
 	{
 		base.Spawn();
 
+		Tags.Add( "weapon" );
 		SetModel( "weapons/rust_pistol/rust_pistol.vmdl" );
-
-		CollisionGroup = CollisionGroup.Weapon;
-		SetInteractsAs( CollisionLayer.Debris );
 	}
 
 	public override void Simulate( Client client )
@@ -54,20 +52,20 @@ public partial class PhysGun : Carriable
 		var eyeDir = owner.EyeRotation.Forward;
 		var eyeRot = Rotation.From( new Angles( 0.0f, owner.EyeRotation.Angles().yaw, 0.0f ) );
 
-		if ( Input.Pressed( InputButton.Attack1 ) )
+		if ( Input.Pressed( InputButton.PrimaryAttack ) )
 		{
-			(Owner as AnimEntity)?.SetAnimParameter( "b_attack", true );
+			(Owner as AnimatedEntity)?.SetAnimParameter( "b_attack", true );
 
 			if ( !grabbing )
 				grabbing = true;
 		}
 
-		bool grabEnabled = grabbing && Input.Down( InputButton.Attack1 );
-		bool wantsToFreeze = Input.Pressed( InputButton.Attack2 );
+		bool grabEnabled = grabbing && Input.Down( InputButton.PrimaryAttack );
+		bool wantsToFreeze = Input.Pressed( InputButton.SecondaryAttack );
 
 		if ( GrabbedEntity.IsValid() && wantsToFreeze )
 		{
-			(Owner as AnimEntity)?.SetAnimParameter( "b_attack", true );
+			(Owner as AnimatedEntity)?.SetAnimParameter( "b_attack", true );
 		}
 
 		BeamActive = grabEnabled;
@@ -121,8 +119,7 @@ public partial class PhysGun : Carriable
 	{
 		var tr = Trace.Ray( eyePos, eyePos + eyeDir * MaxTargetDistance )
 			.UseHitboxes()
-			.Ignore( owner, false )
-			.HitLayer( CollisionLayer.Debris )
+			.Ignore( this )
 			.Run();
 
 		if ( !tr.Hit || !tr.Entity.IsValid() || tr.Entity.IsWorld ) return;
@@ -158,8 +155,8 @@ public partial class PhysGun : Carriable
 	{
 		var tr = Trace.Ray( eyePos, eyePos + eyeDir * MaxTargetDistance )
 			.UseHitboxes()
-			.Ignore( owner, false )
-			.HitLayer( CollisionLayer.Debris )
+			.WithTag( "solid" )
+			.Ignore( this )
 			.Run();
 
 		if ( !tr.Hit || !tr.Entity.IsValid() || tr.Entity.IsWorld || tr.StartedSolid ) return;
@@ -408,7 +405,7 @@ public partial class PhysGun : Carriable
 		if ( !GrabbedEntity.IsValid() )
 			return;
 
-		if ( !owner.Down( InputButton.Attack1 ) )
+		if ( !owner.Down( InputButton.PrimaryAttack ) )
 			return;
 
 		if ( owner.Down( InputButton.Use ) )
