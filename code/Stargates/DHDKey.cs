@@ -78,7 +78,7 @@ namespace winsandbox.Stargates
 			if ( ply == null )
 				return;
 
-			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * ( 85 * ply.Scale ) )
+			var tr = Trace.Ray( ply.EyePosition, ply.EyePosition + ply.EyeRotation.Forward * ( 85 * ply.Scale ) )
 				.HitLayer( CollisionLayer.Debris )
 				.Ignore( ply )
 				.Run();

@@ -57,7 +57,7 @@ namespace winsandbox.Stargates
 		{
 			base.FrameSimulate();
 
-			//EyeRot
+			//EyeRotation
 		}
 
 	}

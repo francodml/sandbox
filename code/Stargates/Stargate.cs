@@ -249,8 +249,8 @@ namespace winsandbox.Stargates
 				var DeltaAngle = OtherGate.eventHorizon.Rotation.Angles() - this.eventHorizon.Rotation.Angles();
 
 
-				ply.EyeRot = Rotation.From( ply.EyeRot.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
-				ply.Rotation = Rotation.From( ply.EyeRot.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
+				ply.EyeRotation = Rotation.From( ply.EyeRotation.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
+				ply.Rotation = Rotation.From( ply.EyeRotation.Angles() + new Angles( 0, DeltaAngle.yaw+180, 0 ) );
 
 				await GameTask.NextPhysicsFrame();
 				using ( Prediction.Off() )

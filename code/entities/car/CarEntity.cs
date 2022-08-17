@@ -1,6 +1,5 @@
 ﻿using Sandbox;
 using System;
-using winsandbox.entities.car;
 
 [Library( "ent_car", Title = "Car", Spawnable = true )]
 public partial class CarEntity : Prop, IUse
@@ -204,7 +203,7 @@ public partial class CarEntity : Prop, IUse
 		currentInput.tilt = (Input.Down( InputButton.Run ) ? 1 : 0) + (Input.Down( InputButton.Duck ) ? -1 : 0);
 		currentInput.roll = (Input.Down( InputButton.Left ) ? 1 : 0) + (Input.Down( InputButton.Right ) ? -1 : 0);
 
-		//	EyeRot = Input.Rotation;
+		//	EyeRotation = Input.Rotation;
 		//	EyePosLocal = Vector3.Up * (64 - 10) * car.Scale;
 		//	Velocity = car.Velocity;
 

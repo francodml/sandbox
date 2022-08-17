@@ -13,7 +13,7 @@ namespace winsandbox.Stargates
 		{
 			//base.BuildInput( input );
 
-			input.ViewAngles = EyeRot.Angles();
+			input.ViewAngles = EyeRotation.Angles();
 			input.StopProcessing = true;
 		}
 

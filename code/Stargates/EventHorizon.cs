@@ -101,7 +101,7 @@ namespace winsandbox.Stargates
 		{
 			if ( SceneObject == null || !SceneObject.IsValid() )
 				return;
-			SceneObject.SetValue( "State", state );
+			SceneObject.Attributes.Set( "State", state );
 		}
 
 		private async void Vortex()
@@ -118,14 +118,14 @@ namespace winsandbox.Stargates
 		{
 			if ( SceneObject == null || !SceneObject.IsValid() )
 				return;
-			SceneObject.SetValue( "Time", openTime );
+			SceneObject.Attributes.Set( "Time", openTime );
 
-			SceneObject.SetValue( "WorldPos", Position );
+			SceneObject.Attributes.Set( "WorldPos", Position );
 
 			var ass = Matrix.CreateRotation( Rotation );
 
-			SceneObject.SetValue( "CapsuleEndPoint", ass.Transform(new Vector3(CapsuleEndPoint.GetValue(openTime),0,0)) );
-			SceneObject.SetValue( "CapsuleWidth",  CapsuleWidth.GetValue(openTime));
+			SceneObject.Attributes.Set( "CapsuleEndPoint", ass.Transform(new Vector3(CapsuleEndPoint.GetValue(openTime),0,0)) );
+			SceneObject.Attributes.Set( "CapsuleWidth",  CapsuleWidth.GetValue(openTime));
 		}
 	}
 }

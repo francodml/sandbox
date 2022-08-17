@@ -19,8 +19,8 @@ namespace winsandbox.Stargates
 			{
 				if ( Input.Down( InputButton.Attack1 ) )
 				{
-					var startPos = Owner.EyePos;
-					var dir = Owner.EyeRot.Forward;
+					var startPos = Owner.EyePosition;
+					var dir = Owner.EyeRotation.Forward;
 
 					if ( !Input.Pressed( InputButton.Attack1 ) ) return;
 
@@ -53,7 +53,7 @@ namespace winsandbox.Stargates
 						Clear();
 					}
 
-					CreateHitEffects( tr.EndPos );
+					CreateHitEffects( tr.EndPosition );
 				}
 			}
 		}

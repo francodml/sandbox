@@ -14,10 +14,13 @@
 						name = "base_physics"
 						parent_bone = ""
 						surface_prop = "default"
-						collision_prop = "default"
+						collision_tags = "solid"
 						recenter_on_parent_bone = false
 						offset_origin = [ 0.0, 0.0, 90.0 ]
 						offset_angles = [ 0.0, 0.0, 0.0 ]
+						align_origin_x_type = "None"
+						align_origin_y_type = "None"
+						align_origin_z_type = "None"
 						filename = "models/Stargates/base_physics.smd"
 						import_scale = 1.0
 						faceMergeAngle = 10.0
@@ -62,7 +65,7 @@
 						_class = "DefaultMaterialGroup"
 						remaps = [  ]
 						use_global_default = true
-						global_default_material = "materials/shiny_white.vmat"
+						global_default_material = "materials/stargates/stargate_sg1.vmat"
 					},
 				]
 			},
@@ -70,5 +73,6 @@
 		model_archetype = ""
 		primary_associated_entity = ""
 		anim_graph_name = ""
+		base_model_name = ""
 	}
 }

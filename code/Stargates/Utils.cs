@@ -34,7 +34,7 @@ namespace winsandbox.Stargates
 		{
 			var ply = ConsoleSystem.Caller.Pawn;
 
-			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+			var tr = Trace.Ray( ply.EyePosition, ply.EyePosition + ply.EyeRotation.Forward * 100000 )
 				.Ignore( ply )
 				.WithTag("IsStargate")
 				.Run();
@@ -49,7 +49,7 @@ namespace winsandbox.Stargates
 		{
 			var ply = ConsoleSystem.Caller.Pawn;
 
-			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+			var tr = Trace.Ray( ply.EyePosition, ply.EyePosition + ply.EyeRotation.Forward * 100000 )
 				.Ignore( ply )
 				.WithTag( "IsStargate" )
 				.Run();
@@ -64,7 +64,7 @@ namespace winsandbox.Stargates
 		{
 			var ply = ConsoleSystem.Caller.Pawn;
 
-			var tr = Trace.Ray( ply.EyePos, ply.EyePos + ply.EyeRot.Forward * 100000 )
+			var tr = Trace.Ray( ply.EyePosition, ply.EyePosition + ply.EyeRotation.Forward * 100000 )
 				.Ignore( ply )
 				.WithTag( "IsStargate" )
 				.Run();

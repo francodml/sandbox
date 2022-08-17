@@ -24,7 +24,7 @@ namespace winsandbox.Stargates.UI
 		{
 			StyleSheet.Load( "Stargates/UI/GateControlPanel.scss" );
 			Gate = gate;
-			lookatangles = Local.Pawn.EyeRot.Angles();
+			lookatangles = Local.Pawn.EyeRotation.Angles();
 
 			var titlebar = AddChild<Titlebar>();
 			{

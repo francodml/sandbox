@@ -52,19 +52,19 @@ namespace winsandbox.Stargates
 		public async void Animate(bool StayLit = false)
 		{
 			Continue = false;
-			SetAnimBool( "IsFinalLock", IsFinalLock );
-			SetAnimBool( "FailedLock", FailedLock );
-			SetAnimBool( "TriggerLock", true );
+			SetAnimParameter( "IsFinalLock", IsFinalLock );
+			SetAnimParameter( "FailedLock", FailedLock );
+			SetAnimParameter( "TriggerLock", true );
 			stayLit = StayLit;
 			await GameTask.Delay( 1000 );
-			SetAnimBool( "TriggerLock", false );
+			SetAnimParameter( "TriggerLock", false );
 		}
 
 		protected override void OnAnimGraphCreated()
 		{
 			base.OnAnimGraphCreated();
 
-			ResetAnimParams();
+			ResetAnimParameters();
 
 		}
 
