@@ -9,5 +9,6 @@
   "ResourcePaths": null,
   "HasCode": true,
   "CodePath": "code",
-  "RootNamespace": "winsandbox"
+  "RootNamespace": "winsandbox",
+  "Metadata": {}
 }
