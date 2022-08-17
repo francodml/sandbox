@@ -25,3 +25,4 @@ sounds/stargates/milkyway/WinSounds.zip
 /shaders/vfx/raymarcher_pc_50_ps.vcs
 /shaders/vfx/raymarcher_pc_50_features.vcs
 /shaders/vfx/raymarcher.ini
+*.generated.*

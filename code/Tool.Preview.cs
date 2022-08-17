@@ -5,7 +5,8 @@ namespace Sandbox.Tools
 {
 	public partial class BaseTool
 	{
-		internal List<PreviewEntity> Previews;
+		[Net]
+		internal List<PreviewEntity> Previews { get; set; }
 
 		protected virtual bool IsPreviewTraceValid( TraceResult tr )
 		{
@@ -25,6 +26,9 @@ namespace Sandbox.Tools
 
 		public virtual void DeletePreviews()
 		{
+			if ( !Host.IsServer )
+				return;
+
 			if ( Previews == null || Previews.Count == 0 )
 				return;
 
@@ -36,12 +40,16 @@ namespace Sandbox.Tools
 			Previews.Clear();
 		}
 
-
 		public virtual bool TryCreatePreview( ref PreviewEntity ent, string model )
 		{
 			if ( !ent.IsValid() )
 			{
-				ent = new PreviewEntity();
+				ent = new PreviewEntity
+				{
+					Predictable = true,
+					Owner = Owner
+				};
+
 				ent.SetModel( model );
 			}
 
@@ -58,8 +66,7 @@ namespace Sandbox.Tools
 			return ent.IsValid();
 		}
 
-
-		private void UpdatePreviews()
+		public void UpdatePreviews()
 		{
 			if ( Previews == null || Previews.Count == 0 )
 				return;
@@ -67,12 +74,10 @@ namespace Sandbox.Tools
 			if ( !Owner.IsValid() )
 				return;
 
-			var startPos = Owner.EyePosition;
-			var dir = Owner.EyeRotation.Forward;
+			if ( !Owner.IsAuthority )
+				return;
 
-			var tr = Trace.Ray( startPos, startPos + dir * 10000.0f )
-				.Ignore( Owner )
-				.Run();
+			var tr = DoTrace();
 
 			foreach ( var preview in Previews )
 			{

@@ -1,4 +1,6 @@
 ﻿using Sandbox;
+using System.Linq;
+using System.Threading.Tasks;
 using winsandbox.sandbox_extensions;
 
 partial class WinSandbox : Game
@@ -8,8 +10,7 @@ partial class WinSandbox : Game
 		if ( IsServer )
 		{
 			// Create the HUD
-			var hud = new SandboxHud();
-			hud.Parent = this; // Do not delete me on map cleanup
+			_ = new SandboxHud();
 		}
 	}
 
@@ -27,8 +28,8 @@ partial class WinSandbox : Game
 		base.OnDestroy();
 	}
 
-	[ServerCmd( "spawn" )]
-	public static void Spawn( string modelname )
+	[ConCmd.Server( "spawn" )]
+	public static async Task Spawn( string modelname )
 	{
 		var owner = ConsoleSystem.Caller?.Pawn;
 
@@ -40,15 +41,61 @@ partial class WinSandbox : Game
 			.Ignore( owner )
 			.Run();
 
-		var ent = new Prop();
-		ent.Position = tr.EndPosition;
-		ent.Rotation = Rotation.From( new Angles( 0, owner.EyeRotation.Angles().yaw, 0 ) ) * Rotation.FromAxis( Vector3.Up, 180 );
-		ent.SetModel( modelname);
-        ent.Position = tr.EndPosition - Vector3.Up * ent.CollisionBounds.Mins.z;
-		UndoSystem.AddUndoEntry(ConsoleSystem.Caller, ent.NetworkIdent);
+		var modelRotation = Rotation.From( new Angles( 0, owner.EyeRotation.Angles().yaw, 0 ) ) * Rotation.FromAxis( Vector3.Up, 180 );
+
+		//
+		// Does this look like a package?
+		//
+		if ( modelname.Count( x => x == '.' ) == 1 && !modelname.EndsWith( ".vmdl", System.StringComparison.OrdinalIgnoreCase ) && !modelname.EndsWith( ".vmdl_c", System.StringComparison.OrdinalIgnoreCase ) )
+		{
+			modelname = await SpawnPackageModel( modelname, tr.EndPosition, modelRotation, owner );
+			if ( modelname == null )
+				return;
+		}
+
+		var model = Model.Load( modelname );
+		if ( model == null || model.IsError )
+			return;
+
+		var ent = new Prop
+		{
+			Position = tr.EndPosition + Vector3.Down * model.PhysicsBounds.Mins.z,
+			Rotation = modelRotation,
+			Model = model
+		};
+
+		// Let's make sure physics are ready to go instead of waiting
+		ent.SetupPhysicsFromModel( PhysicsMotionType.Dynamic );
+
+		// If there's no physics model, create a simple OBB
+		if ( !ent.PhysicsBody.IsValid() )
+		{
+			ent.SetupPhysicsFromOBB( PhysicsMotionType.Dynamic, ent.CollisionBounds.Mins, ent.CollisionBounds.Maxs );
+		}
 	}
 
-    [ServerCmd( "spawn_entity" )]
+	static async Task<string> SpawnPackageModel( string packageName, Vector3 pos, Rotation rotation, Entity source )
+	{
+		var package = await Package.Fetch( packageName, false );
+		if ( package == null || package.PackageType != Package.Type.Model || package.Revision == null )
+		{
+			// spawn error particles
+			return null;
+		}
+
+		if ( !source.IsValid ) return null; // source entity died or disconnected or something
+
+		var model = package.GetMeta( "PrimaryAsset", "models/dev/error.vmdl" );
+		var mins = package.GetMeta( "RenderMins", Vector3.Zero );
+		var maxs = package.GetMeta( "RenderMaxs", Vector3.Zero );
+
+		// downloads if not downloads, mounts if not mounted
+		await package.MountAsync();
+
+		return model;
+	}
+
+	[ConCmd.Server( "spawn_entity" )]
 	public static void SpawnEntity( string entName )
 	{
 		var owner = ConsoleSystem.Caller.Pawn as Player;
@@ -56,10 +103,11 @@ partial class WinSandbox : Game
 		if ( owner == null )
 			return;
 
-		var attribute = Library.GetAttribute( entName );
+		var entityType = TypeLibrary.GetTypeByName<Entity>( entName );
+		if ( entityType == null )
 
-		if ( attribute == null || !attribute.Spawnable )
-			return;
+			if ( !TypeLibrary.Has<SpawnableAttribute>( entityType ) )
+				return;
 
 		var tr = Trace.Ray( owner.EyePosition, owner.EyePosition + owner.EyeRotation.Forward * 200 )
 			.UseHitboxes()
@@ -67,7 +115,7 @@ partial class WinSandbox : Game
 			.Size( 2 )
 			.Run();
 
-		var ent = Library.Create<Entity>( entName );
+		var ent = TypeLibrary.Create<Entity>( entityType );
 		if ( ent is BaseCarriable && owner.Inventory != null )
 		{
 			if ( owner.Inventory.Add( ent, true ) )
@@ -98,9 +146,16 @@ partial class WinSandbox : Game
 		}
 	}
 
-	[AdminCmd( "respawn_entities" )]
+	[ConCmd.Admin( "respawn_entities" )]
 	public static void RespawnEntities()
 	{
 		Map.Reset( DefaultCleanupFilter );
 	}
+
+	[ClientRpc]
+	public override void OnKilledMessage( long leftid, string left, long rightid, string right, string method )
+	{
+		KillFeed.Current?.AddEntry( leftid, left, rightid, right, method );
+	}
+
 }

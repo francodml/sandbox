@@ -3,12 +3,12 @@ using Sandbox;
 
 namespace winsandbox
 {
-	public class PreviewEntity : ModelEntity
+	public partial class PreviewEntity : ModelEntity
 	{
-		public bool RelativeToNormal { get; set; } = true;
-		public bool OffsetBounds { get; set; } = false;
-		public Rotation RotationOffset { get; set; } = Rotation.Identity;
-		public Vector3 PositionOffset { get; set; } = Vector3.Zero;
+		[Net] public bool RelativeToNormal { get; set; } = true;
+		[Net] public bool OffsetBounds { get; set; } = false;
+		[Net] public Rotation RotationOffset { get; set; } = Rotation.Identity;
+		[Net] public Vector3 PositionOffset { get; set; } = Vector3.Zero;
 
 		internal bool UpdateFromTrace( TraceResult tr )
 		{

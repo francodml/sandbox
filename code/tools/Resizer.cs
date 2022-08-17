@@ -19,16 +19,12 @@ namespace winsandbox.tools
 				int resizeDir = 0;
 				var reset = false;
 
-				if ( Input.Down( InputButton.Attack1 ) ) resizeDir = 1;
-				else if ( Input.Down( InputButton.Attack2 ) ) resizeDir = -1;
+				if ( Input.Down( InputButton.PrimaryAttack ) ) resizeDir = 1;
+				else if ( Input.Down( InputButton.SecondaryAttack ) ) resizeDir = -1;
 				else if ( Input.Pressed( InputButton.Reload ) ) reset = true;
 				else return;
 
-				var tr = Trace.Ray( startPos, startPos + dir * MaxTraceDistance )
-				   .Ignore( Owner )
-				   .UseHitboxes()
-				   .HitLayer( CollisionLayer.Debris )
-				   .Run();
+				var tr = DoTrace();
 
 				if ( !tr.Hit || !tr.Entity.IsValid() )
 					return;
@@ -61,7 +57,7 @@ namespace winsandbox.tools
 					}
 				}
 
-				if ( Input.Pressed( InputButton.Attack1 ) || Input.Pressed( InputButton.Attack2 ) || reset )
+				if ( Input.Pressed( InputButton.PrimaryAttack ) || Input.Pressed( InputButton.SecondaryAttack ) || reset )
 				{
 					CreateHitEffects( tr.EndPosition );
 				}

@@ -15,12 +15,7 @@ namespace winsandbox.tools
 
 			using ( Prediction.Off() )
 			{
-				var startPos = Owner.EyePosition;
-				var dir = Owner.EyeRotation.Forward;
-
-				var tr = Trace.Ray( startPos, startPos + dir * MaxTraceDistance )
-					.Ignore( Owner )
-					.Run();
+				var tr = DoTrace();
 
 				if ( !tr.Hit || !tr.Body.IsValid() || !tr.Entity.IsValid() || tr.Entity.IsWorld )
 					return;
@@ -31,7 +26,7 @@ namespace winsandbox.tools
 				if ( tr.Entity is not Prop prop )
 					return;
 
-				if ( Input.Pressed( InputButton.Attack1 ) )
+				if ( Input.Pressed( InputButton.PrimaryAttack ) )
 				{
 					if ( prop.Root is not Prop rootProp )
 					{
@@ -51,7 +46,7 @@ namespace winsandbox.tools
 						target = null;
 					}
 				}
-				else if ( Input.Pressed( InputButton.Attack2 ) )
+				else if ( Input.Pressed( InputButton.SecondaryAttack ) )
 				{
 					prop.Unweld( true );
 
