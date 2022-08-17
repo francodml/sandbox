@@ -12,6 +12,7 @@ tools_thumbnail_cache.bin
 *.blend1
 .blends
 *.obj
+*.*_c
 .intermediate/net5.0/sandbox.deps.json
 maps/editor/_bakeresourcecache/toolscene_default_baked/*
 sounds/stargates/milkyway/WinSounds.zip
